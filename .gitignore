@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+**/node_modules/
+
+# env files (real secrets — never commit; .env.example files are fine)
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
+
+# build output
+dist/
+build/
+**/dist/
+**/*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*

@@ -1,0 +1,18 @@
+import { Request, Response, NextFunction } from 'express'
+
+/**
+ * Global error handler middleware.
+ * Must be registered last in the Express app.
+ */
+export function errorHandler(
+  err: Error,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+): void {
+  console.error('[ERROR]', err.message, err.stack)
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+  })
+}
