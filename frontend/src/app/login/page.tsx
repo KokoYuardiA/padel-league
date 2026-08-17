@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Trophy, Mail, Lock, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react'
+import { Mail, Lock, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/layout/logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -41,12 +42,10 @@ export default function LoginPage() {
     <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
       <div className="w-full max-w-md space-y-8 glass-card p-8 rounded-3xl border border-emerald-800/40 shadow-2xl relative overflow-hidden">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-lime-400 shadow-lg shadow-emerald-500/20 mb-2">
-            <Trophy className="h-6 w-6 text-emerald-950 stroke-[2.5]" />
-          </div>
+        <div className="text-center space-y-2 flex flex-col items-center">
+          <Logo size="lg" showWordmark={false} className="mb-2" />
           <h2 className="text-2xl font-extrabold text-white">Selamat Datang Kembali</h2>
-          <p className="text-xs text-slate-400">Masuk ke akun Let's Play Padel League Anda</p>
+          <p className="text-xs text-slate-400">Masuk ke akun Rally Hub Anda</p>
         </div>
 
         {/* Error Alert */}

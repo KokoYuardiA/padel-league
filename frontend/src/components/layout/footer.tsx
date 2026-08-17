@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Trophy, ShieldCheck, Heart } from 'lucide-react'
+import { ShieldCheck, Heart } from 'lucide-react'
+import { Logo } from '@/components/layout/logo'
 
 export function Footer() {
   return (
@@ -8,14 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-emerald-900/40">
           {/* Brand Info */}
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-lime-500 shadow-md">
-                <Trophy className="h-4 w-4 text-emerald-950 stroke-[2.5]" />
-              </div>
-              <span className="font-bold text-lg text-white">
-                Padel<span className="text-lime-400">League</span>
-              </span>
-            </Link>
+            <Logo size="sm" />
             <p className="text-xs text-slate-400 leading-relaxed">
               Platform manajemen turnamen dan komunitas padel serba otomatis. Jadwal otomatis, skor langsung, dan peringkat real-time.
             </p>
@@ -60,7 +54,7 @@ export function Footer() {
 
         {/* Bottom copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} Let's Play Padel League. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Rally Hub. All rights reserved.</p>
           <div className="flex items-center gap-1 text-slate-400">
             <span>Dibuat khusus untuk komunitas Padel Indonesia</span>
             <Heart className="h-3.5 w-3.5 text-emerald-400 fill-emerald-400" />

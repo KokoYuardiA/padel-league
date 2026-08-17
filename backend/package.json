@@ -1,7 +1,7 @@
 {
   "name": "padel-league-backend",
   "version": "1.0.0",
-  "description": "Let's Play Padel League — Express.js + Socket.IO Backend API",
+  "description": "Rally Hub — Express.js + Socket.IO Backend API",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",

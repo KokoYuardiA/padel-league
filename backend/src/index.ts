@@ -64,7 +64,7 @@ app.use(errorHandler)
 // ── Start Server ─────────────────────────────────────────────
 httpServer.listen(PORT, () => {
   console.log(`
-  ✅ Let's Play Padel League — Backend API Server
+  ✅ Rally Hub — Backend API Server
   🌐 REST API:  http://localhost:${PORT}/api
   🔍 Health:    http://localhost:${PORT}/health
   ⚡ Socket.IO: ws://localhost:${PORT}

@@ -1,6 +1,6 @@
 # Application Workflows
 
-This document explains, function by function, how each working feature of Let's Play Padel League
+This document explains, function by function, how each working feature of Rally Hub
 actually moves data between the three layers: **Next.js frontend** (`frontend/`), **Express backend**
 (`backend/`), and **Supabase** (Postgres + Auth + Storage). It reflects the code as of Phase 6 plus the
 post-Phase-6 join-confirmation addendum — see [ROADMAP.md](./ROADMAP.md) for the phased plan (Phase 7,

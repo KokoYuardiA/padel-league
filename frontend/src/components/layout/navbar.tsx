@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Trophy,
   Users,
   Calendar,
   LayoutDashboard,
@@ -16,6 +15,7 @@ import {
   Compass,
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
+import { Logo } from '@/components/layout/logo'
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -48,19 +48,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-emerald-950/60 bg-emerald-950/40 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-lime-500 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
-            <Trophy className="h-5 w-5 text-emerald-950 stroke-[2.5]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-lg leading-none tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-              Padel<span className="text-lime-400">League</span>
-            </span>
-            <span className="text-[10px] leading-tight font-medium text-emerald-400/80 uppercase tracking-widest">
-              Community Platform
-            </span>
-          </div>
-        </Link>
+        <Logo size="md" showSubtitle />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">

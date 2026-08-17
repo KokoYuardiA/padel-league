@@ -350,10 +350,10 @@ export function generateOpenApiDocument() {
   return generator.generateDocument({
     openapi: '3.1.0',
     info: {
-      title: "Let's Play Padel League API",
+      title: 'Rally Hub API',
       version: '1.0.0',
       description:
-        "REST API for Let's Play Padel League — groups, events, scheduling, live matches, and platform administration. " +
+        'REST API for Rally Hub — groups, events, scheduling, live matches, and platform administration. ' +
         'Every authenticated route expects a Supabase Auth session access token as a Bearer token. ' +
         'Error responses are always `{ "error": string }`; success responses are always `{ "data": ... }` unless noted.',
     },

@@ -11,10 +11,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Let's Play Padel League — Platform Manajemen Turnamen Padel Modern",
+  title: "Rally Hub — Modern Padel Tournament Management Platform",
   description:
-    "Otomatiskan jadwal pertandingan, alokasi lapangan, live scoring dengan konfirmasi otomatis pemain, dan klasemen real-time untuk komunitas Padel Anda.",
-  keywords: ["padel", "padel league", "americano", "mexicano", "round robin", "padel tournament", "live scoring"],
+    "Automate match scheduling, court allocation, live scoring with automatic player confirmation, and real-time standings for your padel community.",
+  keywords: ["padel", "rally hub", "americano", "mexicano", "round robin", "padel tournament", "live scoring"],
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="dark">
+    <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col justify-between`}>
         <AuthProvider>
           <Navbar />

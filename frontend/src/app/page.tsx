@@ -246,7 +246,7 @@ export default function Home() {
             Fitur Lengkap dari Pendaftaran hingga Klasemen Akhir
           </h2>
           <p className="text-slate-300 text-sm leading-relaxed max-w-2xl mx-auto">
-            Platform Let's Play Padel League menggantikan tugas manual organizer dengan otomatisasi menyeluruh. Dari pendaftaran pemain hingga penentuan juara.
+            Platform Rally Hub menggantikan tugas manual organizer dengan otomatisasi menyeluruh. Dari pendaftaran pemain hingga penentuan juara.
           </p>
         </div>
 

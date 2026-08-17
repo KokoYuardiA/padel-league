@@ -1,5 +1,5 @@
 -- ============================================================
--- Let's Play Padel League — Supabase PostgreSQL Schema
+-- Rally Hub — Supabase PostgreSQL Schema
 -- Run this entire file in your Supabase SQL Editor
 -- ============================================================
 
