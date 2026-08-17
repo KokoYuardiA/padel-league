@@ -84,7 +84,7 @@ export default function GroupDetailPage() {
   useEffect(() => {
     if (!groupId) return
     loadGroup()
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat grup.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load group.'))
       .finally(() => setLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupId])
@@ -124,7 +124,7 @@ export default function GroupDetailPage() {
       setGroup((prev) => (prev ? { ...prev, ...data } : prev))
       setShowEditModal(false)
     } catch (err) {
-      setSettingsError(err instanceof ApiError ? err.message : 'Gagal menyimpan pengaturan grup.')
+      setSettingsError(err instanceof ApiError ? err.message : 'Failed to save group settings.')
     } finally {
       setSavingSettings(false)
     }
@@ -149,14 +149,14 @@ export default function GroupDetailPage() {
           : prev
       )
     } catch (err) {
-      setMemberActionError(err instanceof ApiError ? err.message : 'Gagal mengubah role anggota.')
+      setMemberActionError(err instanceof ApiError ? err.message : 'Failed to change member role.')
     } finally {
       setUpdatingMemberId(null)
     }
   }
 
   const handleRemoveMember = async (targetUserId: string, name: string) => {
-    if (!window.confirm(`Keluarkan ${name} dari grup ini?`)) return
+    if (!window.confirm(`Remove ${name} from this group?`)) return
     setMemberActionError('')
     setUpdatingMemberId(targetUserId)
     try {
@@ -165,18 +165,18 @@ export default function GroupDetailPage() {
         prev ? { ...prev, group_members: prev.group_members.filter((m) => m.user_id !== targetUserId) } : prev
       )
     } catch (err) {
-      setMemberActionError(err instanceof ApiError ? err.message : 'Gagal mengeluarkan anggota.')
+      setMemberActionError(err instanceof ApiError ? err.message : 'Failed to remove member.')
     } finally {
       setUpdatingMemberId(null)
     }
   }
 
   if (loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat grup...</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Loading group...</p>
   }
 
   if (error || !group) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-400">{error || 'Grup tidak ditemukan.'}</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-400">{error || 'Group not found.'}</p>
   }
 
   return (
@@ -192,7 +192,7 @@ export default function GroupDetailPage() {
               </span>
               {myMembership && (
                 <span className="text-[10px] font-bold text-lime-400 bg-emerald-900/60 px-2.5 py-1 rounded-full border border-emerald-800">
-                  Peran Anda: {myMembership.role}
+                  Your Role: {myMembership.role}
                 </span>
               )}
             </div>
@@ -208,7 +208,7 @@ export default function GroupDetailPage() {
                 className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-200 bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
               >
                 <Settings className="h-4 w-4 text-lime-400" />
-                Edit Grup
+                Edit Group
               </button>
             )}
             <button
@@ -216,7 +216,7 @@ export default function GroupDetailPage() {
               className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-200 bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
             >
               <QrCode className="h-4 w-4 text-lime-400" />
-              QR Code Undangan
+              Invite QR Code
             </button>
             {canCreateEvent && (
               <Link
@@ -224,7 +224,7 @@ export default function GroupDetailPage() {
                 className="inline-flex items-center justify-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-4 py-2.5 rounded-xl shadow-lg transition-all"
               >
                 <Plus className="h-4 w-4 stroke-[3]" />
-                Buat Event
+                Create Event
               </Link>
             )}
           </div>
@@ -234,7 +234,7 @@ export default function GroupDetailPage() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-emerald-950/80 border border-emerald-800/40">
           <div className="flex items-center gap-2 text-xs text-slate-300 overflow-hidden">
             <Share2 className="h-4 w-4 text-emerald-400 shrink-0" />
-            <span className="font-semibold text-white shrink-0">Link Undangan:</span>
+            <span className="font-semibold text-white shrink-0">Invite Link:</span>
             <span className="truncate text-slate-400 select-all font-mono text-[11px]">{inviteUrl}</span>
           </div>
 
@@ -243,7 +243,7 @@ export default function GroupDetailPage() {
             className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-950 bg-lime-400 hover:bg-lime-300 px-3.5 py-1.5 rounded-xl transition-colors shrink-0"
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-            {copied ? 'Tersalin!' : 'Salin Link'}
+            {copied ? 'Copied!' : 'Copy Link'}
           </button>
         </div>
       </div>
@@ -255,11 +255,11 @@ export default function GroupDetailPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <Calendar className="h-5 w-5 text-emerald-400" />
-              Event Grup
+              Group Events
             </h2>
             {canCreateEvent && (
               <Link href="/events/create" className="text-xs font-semibold text-emerald-400 hover:underline">
-                + Event Baru
+                + New Event
               </Link>
             )}
           </div>
@@ -267,7 +267,7 @@ export default function GroupDetailPage() {
           <div className="space-y-3">
             {events.length === 0 && (
               <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-                Belum ada event di grup ini.
+                No events in this group yet.
               </p>
             )}
             {events.map((evt) => (
@@ -283,14 +283,14 @@ export default function GroupDetailPage() {
                     <span className="text-xs text-slate-400">{evt.event_date}</span>
                   </div>
                   <h3 className="text-base font-bold text-white">{evt.title}</h3>
-                  <p className="text-xs text-emerald-400">Kuota: {evt.max_players} pemain • {evt.status}</p>
+                  <p className="text-xs text-emerald-400">Quota: {evt.max_players} players • {evt.status}</p>
                 </div>
 
                 <Link
                   href={`/events/${evt.id}/live`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-3.5 py-2 rounded-xl"
                 >
-                  Buka Event
+                  Open Event
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -303,7 +303,7 @@ export default function GroupDetailPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <UserCheck className="h-5 w-5 text-emerald-400" />
-              Anggota ({group.group_members.length})
+              Members ({group.group_members.length})
             </h2>
           </div>
 
@@ -358,7 +358,7 @@ export default function GroupDetailPage() {
                           onClick={() =>
                             handleChangeMemberRole(m.user_id, m.role === 'Organizer' ? 'Player' : 'Organizer')
                           }
-                          title={m.role === 'Organizer' ? 'Jadikan Player' : 'Jadikan Organizer'}
+                          title={m.role === 'Organizer' ? 'Make Player' : 'Make Organizer'}
                           className="p-1.5 rounded-lg bg-emerald-900/50 hover:bg-emerald-900/80 border border-emerald-800 text-slate-300 hover:text-white disabled:opacity-40"
                         >
                           <ArrowUpDown className="h-3 w-3" />
@@ -367,7 +367,7 @@ export default function GroupDetailPage() {
                           type="button"
                           disabled={updatingMemberId === m.user_id}
                           onClick={() => handleRemoveMember(m.user_id, m.profiles.full_name)}
-                          title="Keluarkan dari grup"
+                          title="Remove from group"
                           className="p-1.5 rounded-lg bg-rose-900/30 hover:bg-rose-900/60 border border-rose-800 text-rose-300 hover:text-white disabled:opacity-40"
                         >
                           <UserX className="h-3 w-3" />
@@ -386,22 +386,22 @@ export default function GroupDetailPage() {
       {showQRModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-emerald-950 border border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center space-y-6 relative shadow-2xl">
-            <h3 className="text-lg font-bold text-white">QR Code Undangan Grup</h3>
+            <h3 className="text-lg font-bold text-white">Group Invite QR Code</h3>
 
             <div className="p-4 bg-white rounded-2xl inline-block mx-auto shadow-inner">
               <QRCodeSVG value={inviteUrl} size={176} bgColor="#ffffff" fgColor="#064e3b" />
             </div>
 
             <p className="text-xs text-slate-300">
-              Kode undangan: <strong className="text-white font-mono">{group.invite_code}</strong>. Bagikan
-              link atau kode ini agar pemain dapat bergabung ke <strong className="text-white">{group.name}</strong>.
+              Invite code: <strong className="text-white font-mono">{group.invite_code}</strong>. Share this
+              link or code so players can join <strong className="text-white">{group.name}</strong>.
             </p>
 
             <button
               onClick={() => setShowQRModal(false)}
               className="w-full py-2.5 text-xs font-bold text-slate-200 bg-emerald-900/60 hover:bg-emerald-900 border border-emerald-800 rounded-xl"
             >
-              Tutup
+              Close
             </button>
           </div>
         </div>
@@ -414,7 +414,7 @@ export default function GroupDetailPage() {
             onSubmit={handleSaveSettings}
             className="bg-emerald-950 border border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-md w-full space-y-5 relative shadow-2xl"
           >
-            <h3 className="text-lg font-bold text-white">Edit Pengaturan Grup</h3>
+            <h3 className="text-lg font-bold text-white">Edit Group Settings</h3>
 
             {settingsError && (
               <p className="text-xs text-rose-400 flex items-center gap-1.5">
@@ -423,7 +423,7 @@ export default function GroupDetailPage() {
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nama Grup</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Group Name</label>
               <input
                 type="text"
                 required
@@ -435,7 +435,7 @@ export default function GroupDetailPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Deskripsi</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Description</label>
               <textarea
                 rows={3}
                 value={editDescription}
@@ -475,14 +475,14 @@ export default function GroupDetailPage() {
                 onClick={() => setShowEditModal(false)}
                 className="w-1/2 py-2.5 text-xs font-semibold text-slate-300 bg-emerald-900/40 border border-emerald-800 rounded-xl"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={savingSettings}
                 className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50"
               >
-                {savingSettings ? 'Menyimpan...' : 'Simpan'}
+                {savingSettings ? 'Saving...' : 'Save'}
               </button>
             </div>
           </form>

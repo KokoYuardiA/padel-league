@@ -49,7 +49,7 @@ export default function AdminPage() {
         if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
           setAccessDenied(true)
         } else {
-          setError(err instanceof ApiError ? err.message : 'Gagal memuat data admin.')
+          setError(err instanceof ApiError ? err.message : 'Failed to load admin data.')
         }
       })
       .finally(() => setLoading(false))
@@ -65,22 +65,22 @@ export default function AdminPage() {
       })
       setGroups((prev) => prev.map((g) => (g.id === group.id ? { ...g, suspended_at: res.data.suspended_at } : g)))
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal mengubah status grup.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to change group status.')
     } finally {
       setBusyGroupId(null)
     }
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-6xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat...</p>
+    return <p className="max-w-6xl mx-auto px-4 py-16 text-xs text-slate-400">Loading...</p>
   }
 
   if (accessDenied) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <ShieldAlert className="h-10 w-10 text-rose-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">Anda bukan Platform Admin.</h1>
-        <p className="text-xs text-slate-400">Halaman ini hanya bisa diakses oleh Platform Admin.</p>
+        <h1 className="text-lg font-bold text-white">You are not a Platform Admin.</h1>
+        <p className="text-xs text-slate-400">This page can only be accessed by Platform Admins.</p>
       </div>
     )
   }
@@ -92,7 +92,7 @@ export default function AdminPage() {
           <ShieldAlert className="h-6 w-6 text-lime-400" />
           Platform Admin
         </h1>
-        <p className="text-xs text-slate-400">Lihat seluruh grup & pengguna platform, dan suspend grup bila diperlukan.</p>
+        <p className="text-xs text-slate-400">View all platform groups &amp; users, and suspend groups if needed.</p>
       </div>
 
       {error && <p className="text-xs text-rose-400">{error}</p>}
@@ -100,17 +100,17 @@ export default function AdminPage() {
 
       {/* Groups Table */}
       <div className="space-y-3">
-        <h2 className="text-sm font-bold text-white">Semua Grup ({groups.length})</h2>
+        <h2 className="text-sm font-bold text-white">All Groups ({groups.length})</h2>
         <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Nama</th>
-                  <th className="py-3.5 px-4">Visibilitas</th>
-                  <th className="py-3.5 px-4">Anggota</th>
+                  <th className="py-3.5 px-4">Name</th>
+                  <th className="py-3.5 px-4">Visibility</th>
+                  <th className="py-3.5 px-4">Members</th>
                   <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Aksi</th>
+                  <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-emerald-900/40 text-xs">
@@ -127,11 +127,11 @@ export default function AdminPage() {
                     <td className="py-3.5 px-4">
                       {g.suspended_at ? (
                         <span className="text-[10px] font-bold bg-rose-950 text-rose-300 px-2.5 py-1 rounded-full border border-rose-800">
-                          Disuspend
+                          Suspended
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold bg-emerald-950 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-800">
-                          Aktif
+                          Active
                         </span>
                       )}
                     </td>
@@ -161,17 +161,17 @@ export default function AdminPage() {
       <div className="space-y-3">
         <h2 className="text-sm font-bold text-white flex items-center gap-2">
           <Users className="h-4 w-4 text-emerald-400" />
-          Semua Pengguna ({users.length})
+          All Users ({users.length})
         </h2>
         <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Nama</th>
+                  <th className="py-3.5 px-4">Name</th>
                   <th className="py-3.5 px-4">Email</th>
                   <th className="py-3.5 px-4">Skill Level</th>
-                  <th className="py-3.5 px-4">No. Telepon</th>
+                  <th className="py-3.5 px-4">Phone Number</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-emerald-900/40 text-xs">

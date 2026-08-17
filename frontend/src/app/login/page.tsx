@@ -28,7 +28,7 @@ export default function LoginPage() {
     if (signInError) {
       setError(
         signInError.message === 'Invalid login credentials'
-          ? 'Email atau password salah.'
+          ? 'Incorrect email or password.'
           : signInError.message
       )
       return
@@ -44,8 +44,8 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center space-y-2 flex flex-col items-center">
           <Logo size="lg" showWordmark={false} className="mb-2" />
-          <h2 className="text-2xl font-extrabold text-white">Selamat Datang Kembali</h2>
-          <p className="text-xs text-slate-400">Masuk ke akun Rally Hub Anda</p>
+          <h2 className="text-2xl font-extrabold text-white">Welcome Back</h2>
+          <p className="text-xs text-slate-400">Sign in to your Rally Hub account</p>
         </div>
 
         {/* Error Alert */}
@@ -67,7 +67,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="nama@email.com"
+                placeholder="name@email.com"
                 className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-semibold text-slate-300">Password</label>
               <Link href="/forgot-password" className="text-[11px] font-medium text-emerald-400 hover:underline">
-                Lupa Password?
+                Forgot Password?
               </Link>
             </div>
             <div className="relative">
@@ -98,16 +98,16 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
           >
-            {loading ? 'Memproses...' : 'Masuk'}
+            {loading ? 'Processing...' : 'Sign In'}
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </form>
 
         {/* Footer Link */}
         <div className="pt-4 border-t border-emerald-900/40 text-center text-xs text-slate-400">
-          Belum memiliki akun?{' '}
+          Do not have an account?{' '}
           <Link href="/register" className="font-bold text-lime-400 hover:underline">
-            Daftar Pemain Baru
+            Register as New Player
           </Link>
         </div>
       </div>

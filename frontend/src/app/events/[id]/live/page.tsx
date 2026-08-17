@@ -152,7 +152,7 @@ export default function EventLivePage() {
     if (!eventId || authLoading || !user) return
     setLoading(true)
     loadData()
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat event.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load event.'))
       .finally(() => setLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId, authLoading, user])
@@ -222,7 +222,7 @@ export default function EventLivePage() {
       await apiFetch(`/api/events/${eventId}/register`, { method: 'POST' })
       await loadData()
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal mendaftar.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to register.')
     } finally {
       setRegistering(false)
     }
@@ -239,7 +239,7 @@ export default function EventLivePage() {
       setEvent((prev) => (prev ? { ...prev, registrations: res.data } : prev))
       setShowWithdrawConfirm(false)
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal membatalkan pendaftaran.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to cancel registration.')
     } finally {
       setWithdrawing(false)
     }
@@ -256,7 +256,7 @@ export default function EventLivePage() {
       )
       setEvent((prev) => (prev ? { ...prev, registrations: res.data } : prev))
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal mempromosikan pemain.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to promote player.')
     } finally {
       setPromotingId(null)
     }
@@ -299,7 +299,7 @@ export default function EventLivePage() {
       setMatches((prev) => mergeMatchUpdate(prev, data))
       setShowInputModal(false)
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal menyimpan skor.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to save score.')
     }
   }
 
@@ -314,7 +314,7 @@ export default function EventLivePage() {
       })
       setEvent((prev) => (prev ? { ...prev, status: data.status } : prev))
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal mengubah status event.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to change event status.')
     } finally {
       setChangingStatus(false)
     }
@@ -333,7 +333,7 @@ export default function EventLivePage() {
       setMatches(data)
       if (warning) setScheduleWarning(warning)
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal membuat jadwal pertandingan.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to create match schedule.')
     } finally {
       setGeneratingSchedule(false)
     }
@@ -352,7 +352,7 @@ export default function EventLivePage() {
       setMatches(data)
       if (warning) setScheduleWarning(warning)
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal membuat ronde berikutnya.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to create next round.')
     } finally {
       setGeneratingNextRound(false)
     }
@@ -375,7 +375,7 @@ export default function EventLivePage() {
       setMatches((prev) => mergeMatchUpdate(prev, data))
       setShowConfirmModal(false)
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Gagal memproses konfirmasi.')
+      setActionError(err instanceof ApiError ? err.message : 'Failed to process confirmation.')
     }
   }
 
@@ -425,7 +425,7 @@ export default function EventLivePage() {
     return Object.entries(points)
       .map(([userId, pts]) => ({
         userId,
-        name: nameById.get(userId) ?? 'Pemain',
+        name: nameById.get(userId) ?? 'Player',
         points: pts,
         matchesPlayed: played[userId] ?? 0,
         winRate: played[userId] ? Math.round(((wins[userId] ?? 0) / played[userId]) * 100) : 0,
@@ -438,17 +438,17 @@ export default function EventLivePage() {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <LogIn className="h-10 w-10 text-emerald-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">Masuk untuk melihat event ini</h1>
+        <h1 className="text-lg font-bold text-white">Sign in to view this event</h1>
       </div>
     )
   }
 
   if (loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat event...</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Loading event...</p>
   }
 
   if (error || !event) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-400">{error || 'Event tidak ditemukan.'}</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-400">{error || 'Event not found.'}</p>
   }
 
   return (
@@ -484,7 +484,7 @@ export default function EventLivePage() {
                 : 'text-slate-300 hover:text-white'
             }`}
           >
-            Pertandingan
+            Matches
           </button>
           <button
             onClick={() => setActiveTab('leaderboard')}
@@ -494,7 +494,7 @@ export default function EventLivePage() {
                 : 'text-slate-300 hover:text-white'
             }`}
           >
-            Klasemen Sementara
+            Current Standings
           </button>
           {isOrganizerOrAdmin && (
             <button
@@ -505,7 +505,7 @@ export default function EventLivePage() {
                   : 'text-slate-300 hover:text-white'
               }`}
             >
-              Peserta ({event.registrations.length})
+              Participants ({event.registrations.length})
             </button>
           )}
         </div>
@@ -516,7 +516,7 @@ export default function EventLivePage() {
         <div className="p-4 rounded-2xl glass-card border border-amber-800/40 flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs font-semibold text-amber-300 flex items-center gap-1.5">
             <Settings2 className="h-3.5 w-3.5" />
-            Kontrol Organizer — Status saat ini: <strong className="text-white">{event.status}</strong>
+            Organizer Controls — Current status: <strong className="text-white">{event.status}</strong>
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {matches.length === 0 && ['Open', 'Full', 'In Progress'].includes(event.status) && (
@@ -527,17 +527,17 @@ export default function EventLivePage() {
                   className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1.5"
                 >
                   <Wand2 className="h-3.5 w-3.5" />
-                  {generatingSchedule ? 'Membuat jadwal...' : 'Generate Schedule'}
+                  {generatingSchedule ? 'Creating schedule...' : 'Generate Schedule'}
                 </button>
               ) : (
                 <span className="text-[11px] text-slate-500">
-                  Perlu minimal 4 pemain terdaftar untuk generate jadwal (saat ini: {registeredParticipants.length}).
+                  At least 4 registered players are required to generate a schedule (currently: {registeredParticipants.length}).
                 </span>
               )
             )}
             {matches.length === 0 && !['Open', 'Full', 'In Progress'].includes(event.status) && (
               <span className="text-[11px] text-slate-500">
-                Ubah status event ke Open terlebih dahulu untuk membuka pendaftaran sebelum bisa generate jadwal.
+                Change the event status to Open first to open registration before you can generate a schedule.
               </span>
             )}
             {event.format === 'Mexicano' &&
@@ -550,15 +550,15 @@ export default function EventLivePage() {
                     title={
                       matches.every((m) => m.status === 'confirmed')
                         ? undefined
-                        : 'Selesaikan semua skor ronde ini dulu (pakai Override jika ada yang macet)'
+                        : 'Finish all scores for this round first (use Override if any are stuck)'
                     }
                     className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1.5"
                   >
                     <Wand2 className="h-3.5 w-3.5" />
-                    {generatingNextRound ? 'Membuat ronde...' : 'Generate Ronde Berikutnya'}
+                    {generatingNextRound ? 'Creating round...' : 'Generate Next Round'}
                   </button>
                   {!matches.every((m) => m.status === 'confirmed') && (
-                    <span className="text-[11px] text-slate-500">Menunggu semua skor ronde ini terkonfirmasi.</span>
+                    <span className="text-[11px] text-slate-500">Waiting for all scores in this round to be confirmed.</span>
                   )}
                 </div>
               )}
@@ -574,7 +574,7 @@ export default function EventLivePage() {
                 </button>
               ))
             ) : (
-              <span className="text-[11px] text-slate-500">Status final, tidak ada transisi lanjutan.</span>
+              <span className="text-[11px] text-slate-500">Final status, no further transitions available.</span>
             )}
           </div>
         </div>
@@ -585,25 +585,25 @@ export default function EventLivePage() {
       {scheduleWarning && <p className="text-xs text-amber-300">⚠️ {scheduleWarning}</p>}
       {!myRegistration && event.status === 'Open' && (
         <div className="p-4 rounded-2xl glass-card border border-emerald-900/60 flex items-center justify-between gap-4">
-          <p className="text-xs text-slate-300">Anda belum terdaftar di event ini.</p>
+          <p className="text-xs text-slate-300">You are not registered for this event yet.</p>
           <button
             onClick={handleRegister}
             disabled={registering}
             className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2 rounded-xl disabled:opacity-50 shrink-0"
           >
-            {registering ? 'Mendaftar...' : 'Daftar Sekarang'}
+            {registering ? 'Registering...' : 'Register Now'}
           </button>
         </div>
       )}
       {myRegistration?.status === 'registered' && (
         <div className="flex items-center gap-3 flex-wrap">
-          <p className="text-xs text-emerald-400">✓ Anda terdaftar di event ini.</p>
+          <p className="text-xs text-emerald-400">✓ You are registered for this event.</p>
           {canWithdraw && (
             <button
               onClick={() => setShowWithdrawConfirm(true)}
               className="text-xs font-semibold text-rose-300 underline hover:text-rose-200"
             >
-              Batalkan Pendaftaran
+              Cancel Registration
             </button>
           )}
         </div>
@@ -611,14 +611,14 @@ export default function EventLivePage() {
       {myRegistration?.status === 'waiting_list' && (
         <div className="flex items-center gap-3 flex-wrap">
           <p className="text-xs text-amber-300 flex items-center gap-1.5">
-            <Hourglass className="h-3.5 w-3.5" /> Anda di daftar tunggu (#{myRegistration?.waiting_list_position}).
+            <Hourglass className="h-3.5 w-3.5" /> You are on the waitlist (#{myRegistration?.waiting_list_position}).
           </p>
           {canWithdraw && (
             <button
               onClick={() => setShowWithdrawConfirm(true)}
               className="text-xs font-semibold text-rose-300 underline hover:text-rose-200"
             >
-              Batalkan Pendaftaran
+              Cancel Registration
             </button>
           )}
         </div>
@@ -629,7 +629,7 @@ export default function EventLivePage() {
         <div className="space-y-8">
           {rounds.length === 0 && (
             <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-              Jadwal pertandingan belum dibuat. Menunggu Organizer menutup pendaftaran dan membuat jadwal.
+              The match schedule has not been created yet. Waiting for the Organizer to close registration and generate the schedule.
             </p>
           )}
 
@@ -638,7 +638,7 @@ export default function EventLivePage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
                   <RotateCw className="h-5 w-5 text-emerald-400" />
-                  Babak {round}
+                  Round {round}
                 </h2>
               </div>
 
@@ -709,14 +709,14 @@ export default function EventLivePage() {
                       {m.status === 'disputed' && isPlayerInMatch(m) && (
                         <div className="space-y-1.5">
                           <p className="text-[10px] text-rose-300 text-center font-medium">
-                            ⚠️ Skor sebelumnya disanggah. Silakan input ulang skor.
+                            ⚠️ The previous score was disputed. Please re-enter the score.
                           </p>
                           <button
                             onClick={() => handleOpenScoreModal(m)}
                             className="w-full py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-rose-400 to-amber-300 hover:from-rose-300 hover:to-amber-200 rounded-xl transition-all flex items-center justify-center gap-1.5"
                           >
                             <Edit3 className="h-3.5 w-3.5" />
-                            Input Ulang Skor
+                            Re-enter Score
                           </button>
                         </div>
                       )}
@@ -727,18 +727,18 @@ export default function EventLivePage() {
                           className="w-full py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 rounded-xl transition-all flex items-center justify-center gap-1.5"
                         >
                           <Edit3 className="h-3.5 w-3.5" />
-                          Input Skor Pertandingan
+                          Enter Match Score
                         </button>
                       )}
 
                       {m.status === 'in_progress' && !isPlayerInMatch(m) && (
-                        <p className="text-[10px] text-slate-500 text-center">Menunggu skor dari pemain.</p>
+                        <p className="text-[10px] text-slate-500 text-center">Waiting for score from players.</p>
                       )}
 
                       {m.status === 'pending_confirmation' && (
                         <div className="space-y-1.5">
                           <p className="text-[10px] text-amber-300 text-center">
-                            Diinput oleh {nameById.get(m.reported_by ?? '') ?? 'Pemain'}. Menunggu konfirmasi lawan.
+                            Entered by {nameById.get(m.reported_by ?? '') ?? 'Player'}. Waiting for opponent confirmation.
                           </p>
                           {m.needs_confirm_by === user?.id && (
                             <button
@@ -746,7 +746,7 @@ export default function EventLivePage() {
                               className="w-full py-2 text-xs font-bold text-emerald-950 bg-lime-400 hover:bg-lime-300 rounded-xl transition-all flex items-center justify-center gap-1.5"
                             >
                               <UserCheck className="h-3.5 w-3.5" />
-                              Konfirmasi / Dispute Skor
+                              Confirm / Dispute Score
                             </button>
                           )}
                         </div>
@@ -754,7 +754,7 @@ export default function EventLivePage() {
 
                       {m.status === 'confirmed' && (
                         <p className="text-[10px] text-emerald-400 text-center font-medium">
-                          ✓ Skor final telah terkonfirmasi & masuk klasemen
+                          ✓ Final score confirmed and added to standings
                         </p>
                       )}
 
@@ -764,7 +764,7 @@ export default function EventLivePage() {
                           className="w-full py-1.5 text-[10px] font-semibold text-amber-300 hover:text-amber-200 flex items-center justify-center gap-1.5"
                         >
                           <ShieldAlert className="h-3 w-3" />
-                          Override Skor (Organizer)
+                          Override Score (Organizer)
                         </button>
                       )}
                     </div>
@@ -782,13 +782,13 @@ export default function EventLivePage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <Trophy className="h-5 w-5 text-lime-400" />
-              Klasemen Perolehan Poin Individu
+              Individual Points Standings
             </h2>
           </div>
 
           {leaderboard.length === 0 ? (
             <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-              Belum ada skor terkonfirmasi.
+              No confirmed scores yet.
             </p>
           ) : (
             <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
@@ -796,11 +796,11 @@ export default function EventLivePage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      <th className="py-3.5 px-4">Peringkat</th>
-                      <th className="py-3.5 px-4">Nama Pemain</th>
-                      <th className="py-3.5 px-4">Match Dimainkan</th>
+                      <th className="py-3.5 px-4">Rank</th>
+                      <th className="py-3.5 px-4">Player Name</th>
+                      <th className="py-3.5 px-4">Matches Played</th>
                       <th className="py-3.5 px-4">Win Rate</th>
-                      <th className="py-3.5 px-4 text-right">Total Poin</th>
+                      <th className="py-3.5 px-4 text-right">Total Points</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-emerald-900/40 text-xs">
@@ -834,13 +834,13 @@ export default function EventLivePage() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <Users className="h-5 w-5 text-emerald-400" />
-              Peserta Terdaftar
+              Registered Participants
             </h2>
             <span className="text-xs text-slate-400">
-              <span className="text-white font-bold">{registeredParticipants.length}</span> / {event.max_players} kuota
+              <span className="text-white font-bold">{registeredParticipants.length}</span> / {event.max_players} quota
               {waitingListParticipants.length > 0 && (
                 <>
-                  {' '}• <span className="text-amber-300 font-bold">{waitingListParticipants.length}</span> daftar tunggu
+                  {' '}• <span className="text-amber-300 font-bold">{waitingListParticipants.length}</span> on waitlist
                 </>
               )}
             </span>
@@ -848,7 +848,7 @@ export default function EventLivePage() {
 
           {event.registrations.length === 0 ? (
             <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-              Belum ada peserta yang mendaftar.
+              No participants have registered yet.
             </p>
           ) : (
             <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
@@ -857,11 +857,11 @@ export default function EventLivePage() {
                   <thead>
                     <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       <th className="py-3.5 px-4">#</th>
-                      <th className="py-3.5 px-4">Nama Pemain</th>
+                      <th className="py-3.5 px-4">Player Name</th>
                       <th className="py-3.5 px-4">Skill Level</th>
                       <th className="py-3.5 px-4">Status</th>
-                      <th className="py-3.5 px-4">Terdaftar Pada</th>
-                      <th className="py-3.5 px-4 text-right">Aksi</th>
+                      <th className="py-3.5 px-4">Registered On</th>
+                      <th className="py-3.5 px-4 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-emerald-900/40 text-xs">
@@ -871,7 +871,7 @@ export default function EventLivePage() {
                         <td className="py-3.5 px-4 font-bold text-white">
                           {r.profiles.full_name}
                           {r.profiles.id === user?.id && (
-                            <span className="ml-1.5 text-[10px] text-emerald-400 font-normal">(Anda)</span>
+                            <span className="ml-1.5 text-[10px] text-emerald-400 font-normal">(You)</span>
                           )}
                         </td>
                         <td className="py-3.5 px-4 text-slate-400">{r.profiles.skill_level}</td>
@@ -884,12 +884,12 @@ export default function EventLivePage() {
                             }`}
                           >
                             {r.status === 'registered'
-                              ? 'Terdaftar'
-                              : `Daftar Tunggu${r.waiting_list_position ? ` (#${r.waiting_list_position})` : ''}`}
+                              ? 'Registered'
+                              : `Waitlist${r.waiting_list_position ? ` (#${r.waiting_list_position})` : ''}`}
                           </span>
                         </td>
                         <td className="py-3.5 px-4 text-slate-400">
-                          {new Date(r.registered_at).toLocaleString('id-ID', {
+                          {new Date(r.registered_at).toLocaleString('en-US', {
                             dateStyle: 'medium',
                             timeStyle: 'short',
                           })}
@@ -901,7 +901,7 @@ export default function EventLivePage() {
                               disabled={promotingId === r.id}
                               className="text-[11px] font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-2.5 py-1 rounded-lg disabled:opacity-50"
                             >
-                              {promotingId === r.id ? 'Memproses...' : 'Promosikan'}
+                              {promotingId === r.id ? 'Processing...' : 'Promote'}
                             </button>
                           )}
                         </td>
@@ -920,12 +920,12 @@ export default function EventLivePage() {
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-emerald-950 border border-emerald-700/60 p-6 rounded-3xl max-w-md w-full space-y-6 relative shadow-2xl">
             <h3 className="text-lg font-bold text-white">
-              {scoreModalMode === 'override' ? 'Override Skor (Organizer)' : 'Input Skor'} — Court{' '}
+              {scoreModalMode === 'override' ? 'Override Score (Organizer)' : 'Enter Score'} — Court{' '}
               {selectedMatch.court_number}
             </h3>
             {scoreModalMode === 'override' && (
               <p className="text-[11px] text-amber-300 -mt-4">
-                Skor ini langsung final tanpa perlu konfirmasi lawan.
+                This score is immediately final and does not require opponent confirmation.
               </p>
             )}
 
@@ -934,7 +934,7 @@ export default function EventLivePage() {
             <div className="space-y-4">
               <div className="p-3.5 rounded-2xl bg-emerald-900/40 border border-emerald-800/50 space-y-2">
                 <span className="text-xs font-bold text-emerald-300">
-                  Tim A: {[selectedMatch.team_a_player1.full_name, selectedMatch.team_a_player2?.full_name].filter(Boolean).join(' / ')}
+                  Team A: {[selectedMatch.team_a_player1.full_name, selectedMatch.team_a_player2?.full_name].filter(Boolean).join(' / ')}
                 </span>
                 <input
                   type="number"
@@ -948,7 +948,7 @@ export default function EventLivePage() {
 
               <div className="p-3.5 rounded-2xl bg-emerald-900/40 border border-emerald-800/50 space-y-2">
                 <span className="text-xs font-bold text-slate-300">
-                  Tim B: {[selectedMatch.team_b_player1.full_name, selectedMatch.team_b_player2?.full_name].filter(Boolean).join(' / ')}
+                  Team B: {[selectedMatch.team_b_player1.full_name, selectedMatch.team_b_player2?.full_name].filter(Boolean).join(' / ')}
                 </span>
                 <input
                   type="number"
@@ -966,13 +966,13 @@ export default function EventLivePage() {
                 onClick={() => setShowInputModal(false)}
                 className="w-1/2 py-2.5 text-xs font-semibold text-slate-300 bg-emerald-900/40 border border-emerald-800 rounded-xl"
               >
-                Batal
+                Cancel
               </button>
               <button
                 onClick={handleSaveScore}
                 className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg"
               >
-                {scoreModalMode === 'override' ? 'Simpan Override' : 'Kirim Skor'}
+                {scoreModalMode === 'override' ? 'Save Override' : 'Submit Score'}
               </button>
             </div>
           </div>
@@ -988,9 +988,9 @@ export default function EventLivePage() {
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-white">Konfirmasi Skor Pertandingan</h3>
+              <h3 className="text-lg font-bold text-white">Confirm Match Score</h3>
               <p className="text-xs text-slate-300 mt-1">
-                {nameById.get(selectedMatch.reported_by ?? '') ?? 'Pemain'} telah menginput skor:{' '}
+                {nameById.get(selectedMatch.reported_by ?? '') ?? 'Player'} has entered a score:{' '}
                 <strong className="text-lime-400">
                   {selectedMatch.score_a} - {selectedMatch.score_b}
                 </strong>
@@ -1004,13 +1004,13 @@ export default function EventLivePage() {
                 onClick={() => handleResolve('dispute')}
                 className="w-1/2 py-2.5 text-xs font-semibold text-rose-300 bg-rose-900/30 border border-rose-800 rounded-xl hover:bg-rose-900/50"
               >
-                Dispute (Sanggah)
+                Dispute
               </button>
               <button
                 onClick={() => handleResolve('confirm')}
                 className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-lime-400 hover:bg-lime-300 rounded-xl shadow-lg"
               >
-                Konfirmasi Benar
+                Confirm Correct
               </button>
             </div>
           </div>
@@ -1026,10 +1026,10 @@ export default function EventLivePage() {
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-white">Batalkan Pendaftaran?</h3>
+              <h3 className="text-lg font-bold text-white">Cancel Registration?</h3>
               <p className="text-xs text-slate-300 mt-1">
-                Anda akan keluar dari event ini. Kalau ada pemain di daftar tunggu, satu orang akan
-                otomatis dipromosikan menggantikan slot Anda.
+                You will leave this event. If there are players on the waitlist, one will
+                automatically be promoted to take your slot.
               </p>
               {actionError && <p className="text-xs text-rose-400 mt-2">{actionError}</p>}
             </div>
@@ -1040,14 +1040,14 @@ export default function EventLivePage() {
                 disabled={withdrawing}
                 className="w-1/2 py-2.5 text-xs font-semibold text-slate-300 bg-emerald-900/40 border border-emerald-800 rounded-xl hover:bg-emerald-900/60 disabled:opacity-50"
               >
-                Batal
+                Cancel
               </button>
               <button
                 onClick={handleWithdraw}
                 disabled={withdrawing}
                 className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50"
               >
-                {withdrawing ? 'Memproses...' : 'Ya, Batalkan'}
+                {withdrawing ? 'Processing...' : 'Yes, Cancel'}
               </button>
             </div>
           </div>

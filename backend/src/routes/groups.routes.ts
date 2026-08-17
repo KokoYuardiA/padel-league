@@ -283,7 +283,7 @@ groupsRouter.post('/join/:invite_code', requireAuth, async (req: AuthenticatedRe
   // the caller isn't a member yet, so it never passes through that
   // middleware at all. Gate it here explicitly instead.
   if (group.suspended_at) {
-    res.status(403).json({ error: 'Grup ini sedang disuspend dan tidak menerima anggota baru.' })
+    res.status(403).json({ error: 'This group is currently suspended and is not accepting new members.' })
     return
   }
 

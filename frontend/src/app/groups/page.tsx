@@ -35,7 +35,7 @@ export default function GroupsPage() {
 
     apiFetch<{ data: GroupMembership[] }>('/api/groups')
       .then((res) => setMemberships(res.data))
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat grup.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load groups.'))
       .finally(() => setLoading(false))
   }, [user, authLoading])
 
@@ -47,13 +47,13 @@ export default function GroupsPage() {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <LogIn className="h-10 w-10 text-emerald-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">Masuk untuk melihat grup Anda</h1>
-        <p className="text-xs text-slate-400">Grup yang Anda ikuti hanya terlihat setelah masuk ke akun.</p>
+        <h1 className="text-lg font-bold text-white">Sign in to view your groups</h1>
+        <p className="text-xs text-slate-400">Groups you belong to are only visible after signing in.</p>
         <Link
           href="/login"
           className="inline-flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2.5 rounded-xl"
         >
-          Masuk Sekarang
+          Sign In Now
         </Link>
       </div>
     )
@@ -66,10 +66,10 @@ export default function GroupsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
             <Users className="h-7 w-7 text-emerald-400" />
-            Grup Komunitas & Klub Padel
+            Community & Padel Club Groups
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Kelola grup Anda atau gabung komunitas lain menggunakan link & QR Code.
+            Manage your groups or join other communities using a link & QR Code.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export default function GroupsPage() {
           className="inline-flex items-center justify-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-4 py-2.5 rounded-xl shadow-lg transition-all"
         >
           <Plus className="h-4 w-4 stroke-[3]" />
-          Buat Grup Baru
+          Create New Group
         </Link>
       </div>
 
@@ -89,24 +89,24 @@ export default function GroupsPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Cari grup klub padel..."
+          placeholder="Search padel club groups..."
           className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
         />
       </div>
 
       {/* Loading / Error / Empty States */}
-      {loading && <p className="text-xs text-slate-400">Memuat grup...</p>}
+      {loading && <p className="text-xs text-slate-400">Loading groups...</p>}
       {!loading && error && <p className="text-xs text-rose-400">{error}</p>}
       {!loading && !error && filteredGroups.length === 0 && (
         <div className="text-center py-16 space-y-3">
           <Users className="h-10 w-10 text-emerald-700 mx-auto" />
-          <p className="text-sm text-slate-400">Anda belum bergabung dengan grup manapun.</p>
+          <p className="text-sm text-slate-400">You have not joined any groups yet.</p>
           <Link
             href="/groups/create"
             className="inline-flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2.5 rounded-xl"
           >
             <Plus className="h-4 w-4" />
-            Buat Grup Pertama Anda
+            Create Your First Group
           </Link>
         </div>
       )}
@@ -127,7 +127,7 @@ export default function GroupsPage() {
                   </span>
                   {grp.suspended_at && (
                     <span className="text-[10px] font-bold bg-rose-950 text-rose-300 px-2.5 py-1 rounded-full border border-rose-800">
-                      Disuspend
+                      Suspended
                     </span>
                   )}
                   <span className="text-[10px] font-semibold text-lime-400 bg-emerald-900/50 px-2 py-0.5 rounded-md border border-emerald-800">
@@ -144,7 +144,7 @@ export default function GroupsPage() {
                   href={`/groups/${grp.id}`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-slate-200 hover:text-emerald-400 hover:bg-emerald-900/40 px-3 py-1.5 rounded-lg transition-colors"
                 >
-                  Buka Detail
+                  View Details
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>

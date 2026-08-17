@@ -82,13 +82,13 @@ export default function DashboardPage() {
         const upcoming = perGroupEvents
           .flatMap((res) => res.data)
           .filter((evt) => evt.event_date >= today && evt.status !== 'Cancelled' && evt.status !== 'Completed')
-          .map((evt) => ({ ...evt, groupName: groupNameById.get(evt.group_id) ?? 'Grup' }))
+          .map((evt) => ({ ...evt, groupName: groupNameById.get(evt.group_id) ?? 'Group' }))
           .sort((a, b) => a.event_date.localeCompare(b.event_date))
           .slice(0, 5)
 
         setUpcomingEvents(upcoming)
       })
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat data dashboard.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load dashboard data.'))
       .finally(() => setLoading(false))
 
     apiFetch<{ data: { summary: PlayerStatsSummary } }>('/api/players/me/stats')
@@ -101,19 +101,19 @@ export default function DashboardPage() {
   if (!authLoading && !user) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <h1 className="text-lg font-bold text-white">Masuk untuk melihat dashboard Anda</h1>
+        <h1 className="text-lg font-bold text-white">Sign in to view your dashboard</h1>
         <Link
           href="/login"
           className="inline-flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2.5 rounded-xl"
         >
-          Masuk Sekarang
+          Sign In Now
         </Link>
       </div>
     )
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat dashboard...</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Loading dashboard...</p>
   }
 
   return (
@@ -125,7 +125,7 @@ export default function DashboardPage() {
             <SparklesIcon /> Player Dashboard
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-            Selamat Datang, {fullName || user?.email}! 👋
+            Welcome, {fullName || user?.email}! 👋
           </h1>
           {skillLevel && (
             <p className="text-xs sm:text-sm text-slate-300">
@@ -140,14 +140,14 @@ export default function DashboardPage() {
             className="inline-flex items-center justify-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-4 py-2.5 rounded-xl shadow-lg transition-all"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
-            Buat Event Baru
+            Create New Event
           </Link>
           <Link
             href="/groups/create"
             className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-200 bg-emerald-900/40 border border-emerald-700/50 hover:bg-emerald-900/60 px-4 py-2.5 rounded-xl transition-all"
           >
             <Users className="h-4 w-4 text-emerald-400" />
-            Buat Grup
+            Create Group
           </Link>
         </div>
       </div>
@@ -157,10 +157,10 @@ export default function DashboardPage() {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Grup Diikuti', value: memberships.length, icon: Users },
-          { label: 'Event Mendatang', value: upcomingEvents.length, icon: Calendar },
-          { label: 'Total Kemenangan', value: statsSummary?.wins ?? 0, icon: Trophy },
-          { label: 'Total Poin', value: statsSummary?.totalPoints ?? 0, icon: Zap },
+          { label: 'Groups Joined', value: memberships.length, icon: Users },
+          { label: 'Upcoming Events', value: upcomingEvents.length, icon: Calendar },
+          { label: 'Total Wins', value: statsSummary?.wins ?? 0, icon: Trophy },
+          { label: 'Total Points', value: statsSummary?.totalPoints ?? 0, icon: Zap },
         ].map((stat, i) => (
           <div key={i} className="p-4 rounded-2xl glass-card border border-emerald-900/50 flex items-center justify-between">
             <div>
@@ -181,17 +181,17 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <Calendar className="h-5 w-5 text-emerald-400" />
-              Event Mendatang
+              Upcoming Events
             </h2>
             <Link href="/events" className="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
-              Lihat Semua <ChevronRight className="h-3.5 w-3.5" />
+              View All <ChevronRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           <div className="space-y-4">
             {upcomingEvents.length === 0 && (
               <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-                Tidak ada event mendatang di grup Anda.
+                No upcoming events in your groups.
               </p>
             )}
             {upcomingEvents.map((evt) => (
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                     href={`/events/${evt.id}/live`}
                     className="inline-flex items-center gap-1 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-3.5 py-2 rounded-xl"
                   >
-                    Buka Live Match
+                    Open Live Match
                     <ArrowUpRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -238,17 +238,17 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
               <Users className="h-5 w-5 text-emerald-400" />
-              Grup Anda
+              Your Groups
             </h2>
             <Link href="/groups" className="text-xs font-semibold text-emerald-400 hover:underline">
-              Kelola
+              Manage
             </Link>
           </div>
 
           <div className="space-y-3">
             {memberships.length === 0 && (
               <p className="text-xs text-slate-400 p-4 rounded-2xl glass-card border border-emerald-900/60">
-                Anda belum bergabung dengan grup manapun.
+                You have not joined any groups yet.
               </p>
             )}
             {memberships.map(({ groups: grp, role }) => (
@@ -275,7 +275,7 @@ export default function DashboardPage() {
               className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl border border-dashed border-emerald-700/50 hover:border-emerald-500 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Buat Grup Klub Baru
+              Create New Club Group
             </Link>
           </div>
         </div>

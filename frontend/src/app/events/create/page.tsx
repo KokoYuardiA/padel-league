@@ -22,11 +22,11 @@ interface GroupMembership {
 }
 
 const EVENT_FORMATS = [
-  { name: 'Americano', desc: 'Rotasi pasangan & lawan tiap babak. Poin individu diakumulasi.', icon: RotateCw },
-  { name: 'Mexicano', desc: 'Pasangan disesuaikan dengan posisi peringkat sementara per babak.', icon: Flame },
-  { name: 'Fixed Partner', desc: 'Pasangan tetap sepanjang event. Lawan berotasi tiap babak.', icon: Users },
-  { name: 'Mixed Partner', desc: 'Ganda campuran (pria & wanita wajib seimbang per tim).', icon: Sparkles },
-  { name: 'Round Robin', desc: 'Setiap pasangan/pemain bertemu lawan yang sama tepat satu kali.', icon: Activity },
+  { name: 'Americano', desc: 'Partners and opponents rotate each round. Individual points are accumulated.', icon: RotateCw },
+  { name: 'Mexicano', desc: 'Partners are matched based on current standings each round.', icon: Flame },
+  { name: 'Fixed Partner', desc: 'Partners stay fixed throughout the event. Opponents rotate each round.', icon: Users },
+  { name: 'Mixed Partner', desc: 'Mixed doubles (men and women must be balanced per team).', icon: Sparkles },
+  { name: 'Round Robin', desc: 'Every pair/player meets the same opponent exactly once.', icon: Activity },
 ]
 
 export default function CreateEventPage() {
@@ -62,7 +62,7 @@ export default function CreateEventPage() {
           setGroupId(eligible[0].id)
         }
       })
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat grup.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load groups.'))
       .finally(() => setGroupsLoading(false))
   }, [searchParams])
 
@@ -71,7 +71,7 @@ export default function CreateEventPage() {
     setError('')
 
     if (!groupId) {
-      setError('Pilih grup penyelenggara terlebih dahulu.')
+      setError('Select an organizing group first.')
       return
     }
 
@@ -92,7 +92,7 @@ export default function CreateEventPage() {
       })
       router.push(`/events/${data.id}/live`)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Gagal membuat event. Coba lagi.')
+      setError(err instanceof ApiError ? err.message : 'Failed to create event. Try again.')
       setLoading(false)
     }
   }
@@ -102,10 +102,10 @@ export default function CreateEventPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
           <Calendar className="h-6 w-6 text-emerald-400" />
-          Buat Event Padel Baru
+          Create New Padel Event
         </h1>
         <p className="text-xs text-slate-400">
-          Konfigurasi detail pertandingan, kuota pemain, dan algoritma *schedule generation* otomatis.
+          Configure match details, player quota, and the automatic schedule generation algorithm.
         </p>
       </div>
 
@@ -113,8 +113,8 @@ export default function CreateEventPage() {
         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start gap-3">
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <span>
-            Anda perlu menjadi Organizer atau Group Admin di sebuah grup untuk membuat event. Buat grup baru
-            atau minta admin grup Anda menjadikan Anda Organizer.
+            You need to be an Organizer or Group Admin in a group to create an event. Create a new group
+            or ask your group admin to make you an Organizer.
           </span>
         </div>
       )}
@@ -128,20 +128,20 @@ export default function CreateEventPage() {
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nama Event</label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Event Name</label>
           <input
             type="text"
             required
             minLength={3}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Contoh: Jakarta Padel Open — Round 4"
+            placeholder="Example: Jakarta Padel Open — Round 4"
             className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Pilih Grup Penyelenggara</label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Select Organizing Group</label>
           <select
             required
             value={groupId}
@@ -149,7 +149,7 @@ export default function CreateEventPage() {
             disabled={eligibleGroups.length === 0}
             className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400 disabled:opacity-50"
           >
-            {eligibleGroups.length === 0 && <option value="">Tidak ada grup yang tersedia</option>}
+            {eligibleGroups.length === 0 && <option value="">No groups available</option>}
             {eligibleGroups.map((g) => (
               <option key={g.id} value={g.id}>
                 {g.name} ({g.is_public ? 'Public' : 'Private'})
@@ -161,7 +161,7 @@ export default function CreateEventPage() {
         {/* 5 Match Formats Selection */}
         <div>
           <label className="block text-xs font-semibold text-slate-300 mb-2">
-            Pilih Format Pertandingan (Auto-Scheduler Engine)
+            Select Match Format (Auto-Scheduler Engine)
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {EVENT_FORMATS.map((f) => (
@@ -191,7 +191,7 @@ export default function CreateEventPage() {
         {/* Event Details: Date, Location, Courts */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Tanggal</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Date</label>
             <input
               type="date"
               required
@@ -202,7 +202,7 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Jam Mulai</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Start Time</label>
             <input
               type="time"
               required
@@ -213,7 +213,7 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Jumlah Lapangan</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Number of Courts</label>
             <input
               type="number"
               min={1}
@@ -227,7 +227,7 @@ export default function CreateEventPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Lokasi Lapangan</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Court Location</label>
             <div className="relative">
               <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -243,7 +243,7 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Maksimal Pemain (Kuota)</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Maximum Players (Quota)</label>
             <input
               type="number"
               min={4}
@@ -261,7 +261,7 @@ export default function CreateEventPage() {
             disabled={loading || eligibleGroups.length === 0}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
-            {loading ? 'Membuat Event...' : 'Buat Event'}
+            {loading ? 'Creating Event...' : 'Create Event'}
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </div>

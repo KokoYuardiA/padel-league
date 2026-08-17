@@ -27,13 +27,13 @@ function buildScheduleWarning(opts: {
 }): string | undefined {
   const warnings: string[] = []
   if (opts.excludedPlayerId) {
-    warnings.push('Jumlah pemain terdaftar ganjil — satu pemain (paling baru daftar) tidak mendapat tim dan dikecualikan dari jadwal.')
+    warnings.push('Odd number of registered players — one player (the most recent to register) did not get a team and was excluded from the schedule.')
   }
   if (opts.benchedPlayerIds && opts.benchedPlayerIds.length > 0) {
-    warnings.push(`${opts.benchedPlayerIds.length} pemain tidak main ronde ini karena keterbatasan court — akan diprioritaskan ronde berikutnya.`)
+    warnings.push(`${opts.benchedPlayerIds.length} player(s) are sitting out this round due to court limits — they will be prioritized next round.`)
   }
   if (opts.roundCount && opts.roundCount > ROUND_COUNT_WARNING_THRESHOLD) {
-    warnings.push(`Jadwal ini punya ${opts.roundCount} ronde — pertimbangkan jumlah court/pemain untuk event berikutnya.`)
+    warnings.push(`This schedule has ${opts.roundCount} rounds — consider the court/player count for the next event.`)
   }
   return warnings.length > 0 ? warnings.join(' ') : undefined
 }
@@ -229,7 +229,7 @@ export function createScheduleRouter(io: SocketIOServer) {
       const unconfirmed = existingMatches.filter((m) => m.status !== 'confirmed')
       if (unconfirmed.length > 0) {
         res.status(409).json({
-          error: `${unconfirmed.length} match belum terkonfirmasi — selesaikan semua skor ronde ini dulu sebelum generate ronde berikutnya`,
+          error: `${unconfirmed.length} match(es) not yet confirmed — finish confirming all scores for this round before generating the next round`,
         })
         return
       }
@@ -273,9 +273,9 @@ export function createScheduleRouter(io: SocketIOServer) {
         if (rpcError.message?.includes('EVENT_NOT_FOUND')) {
           res.status(404).json({ error: 'Event not found' })
         } else if (rpcError.message?.includes('ROUND_STATE_CHANGED')) {
-          res.status(409).json({ error: 'Ronde berikutnya sudah dibuat oleh proses lain — muat ulang halaman.' })
+          res.status(409).json({ error: 'The next round was already created by another process — reload the page.' })
         } else if (rpcError.message?.includes('PREVIOUS_ROUND_NOT_CONFIRMED')) {
-          res.status(409).json({ error: 'Belum semua pertandingan ronde sebelumnya terkonfirmasi.' })
+          res.status(409).json({ error: 'Not all matches in the previous round have been confirmed yet.' })
         } else {
           res.status(500).json({ error: rpcError.message })
         }

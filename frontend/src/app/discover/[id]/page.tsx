@@ -39,20 +39,20 @@ export default function DiscoverGroupPage() {
   useEffect(() => {
     apiFetch<{ data: PublicGroupDetail }>(`/api/public/groups/${params.id}`)
       .then((res) => setGroup(res.data))
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat grup.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load group.'))
       .finally(() => setLoading(false))
   }, [params.id])
 
   if (loading) {
-    return <p className="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat grup...</p>
+    return <p className="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-400">Loading group...</p>
   }
 
   if (error || !group) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <p className="text-sm text-slate-400">{error || 'Grup tidak ditemukan atau bukan grup publik.'}</p>
+        <p className="text-sm text-slate-400">{error || 'Group not found or is not a public group.'}</p>
         <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
-          <ArrowLeft className="h-3.5 w-3.5" /> Kembali ke Jelajahi Grup
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Explore Groups
         </Link>
       </div>
     )
@@ -61,7 +61,7 @@ export default function DiscoverGroupPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
-        <ArrowLeft className="h-3.5 w-3.5" /> Kembali ke Jelajahi Grup
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to Explore Groups
       </Link>
 
       <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-900/60 space-y-4">
@@ -69,30 +69,30 @@ export default function DiscoverGroupPage() {
           <h1 className="text-2xl font-extrabold text-white">{group.name}</h1>
           <span className="flex items-center gap-1.5 text-xs font-semibold text-lime-400 bg-emerald-900/50 px-3 py-1 rounded-full border border-emerald-800">
             <Users className="h-3.5 w-3.5" />
-            {group.member_count} Anggota
+            {group.member_count} Members
           </span>
         </div>
-        <p className="text-sm text-slate-300 leading-relaxed">{group.description || 'Tidak ada deskripsi.'}</p>
+        <p className="text-sm text-slate-300 leading-relaxed">{group.description || 'No description.'}</p>
 
         <div className="pt-4 border-t border-emerald-900/50">
           {user ? (
             <p className="text-xs text-slate-400">
-              Belum jadi anggota grup ini? Hubungi admin grup untuk mendapatkan kode undangan.
+              Not a member of this group yet? Contact the group admin to get an invite code.
             </p>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-xs text-slate-400">Masuk atau daftar untuk mulai bergabung dengan komunitas padel.</p>
+              <p className="text-xs text-slate-400">Sign in or register to start joining padel communities.</p>
               <Link
                 href="/login"
                 className="text-xs font-semibold text-slate-200 hover:text-white bg-emerald-900/40 border border-emerald-800 px-3.5 py-1.5 rounded-xl"
               >
-                Masuk
+                Sign In
               </Link>
               <Link
                 href="/register"
                 className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-3.5 py-1.5 rounded-xl"
               >
-                Daftar
+                Register
               </Link>
             </div>
           )}
@@ -107,7 +107,7 @@ export default function DiscoverGroupPage() {
 
         {group.events.length === 0 ? (
           <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-            Belum ada event publik dari grup ini.
+            No public events from this group yet.
           </p>
         ) : (
           <div className="space-y-3">

@@ -84,7 +84,7 @@ playersRouter.get('/me/stats', requireAuth, async (req: AuthenticatedRequest, re
         matchId: m.id,
         eventId: m.events!.id,
         eventTitle: m.events!.title,
-        groupName: m.events!.groups?.name ?? 'Grup',
+        groupName: m.events!.groups?.name ?? 'Group',
         eventDate: m.events!.event_date,
         format: m.events!.format,
         myScore,

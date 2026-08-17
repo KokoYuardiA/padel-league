@@ -25,7 +25,7 @@ export default function CreateGroupPage() {
       })
       router.push(`/groups/${data.id}`)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Gagal membuat grup. Coba lagi.')
+      setError(err instanceof ApiError ? err.message : 'Failed to create group. Please try again.')
       setLoading(false)
     }
   }
@@ -35,10 +35,10 @@ export default function CreateGroupPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
           <Users className="h-6 w-6 text-emerald-400" />
-          Buat Grup Komunitas Baru
+          Create New Community Group
         </h1>
         <p className="text-xs text-slate-400">
-          Buat ruang klub/komunitas padel Anda untuk mengorganisir event dan anggotanya secara terisolasi.
+          Create your padel club/community space to organize events and members in isolation.
         </p>
       </div>
 
@@ -51,31 +51,31 @@ export default function CreateGroupPage() {
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nama Grup / Klub</label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Group / Club Name</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Contoh: Jakarta Padel Community"
+            placeholder="Example: Jakarta Padel Community"
             className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Deskripsi Singkat</label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Short Description</label>
           <textarea
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Jelaskan mengenai klub, lokasi bermain, dan jadwal rutin..."
+            placeholder="Describe the club, playing location, and regular schedule..."
             className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
           />
         </div>
 
         {/* Public vs Private Selector */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-2">Tipe Akses Grup</label>
+          <label className="block text-xs font-semibold text-slate-300 mb-2">Group Access Type</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               type="button"
@@ -94,7 +94,7 @@ export default function CreateGroupPage() {
                 {isPublic && <Check className="h-4 w-4 text-lime-400" />}
               </div>
               <p className="text-[11px] text-slate-400 leading-normal">
-                Bisa ditemukan di pencarian dan diakses via Link/QR Code.
+                Can be found in search and accessed via Link/QR Code.
               </p>
             </button>
 
@@ -115,7 +115,7 @@ export default function CreateGroupPage() {
                 {!isPublic && <Check className="h-4 w-4 text-lime-400" />}
               </div>
               <p className="text-[11px] text-slate-400 leading-normal">
-                Hanya pemain dengan Link / QR Code khusus yang bisa bergabung.
+                Only players with a specific Link / QR Code can join.
               </p>
             </button>
           </div>
@@ -127,7 +127,7 @@ export default function CreateGroupPage() {
             disabled={loading}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
-            {loading ? 'Membuat Grup...' : 'Buat Grup Sekarang'}
+            {loading ? 'Creating Group...' : 'Create Group Now'}
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </div>

@@ -49,12 +49,12 @@ export default function EventsPage() {
 
         const merged = perGroupEvents
           .flatMap((res) => res.data)
-          .map((evt) => ({ ...evt, groupName: groupNameById.get(evt.group_id) ?? 'Grup' }))
+          .map((evt) => ({ ...evt, groupName: groupNameById.get(evt.group_id) ?? 'Group' }))
           .sort((a, b) => a.event_date.localeCompare(b.event_date))
 
         setEvents(merged)
       })
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat event.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load events.'))
       .finally(() => setLoading(false))
   }, [user, authLoading])
 
@@ -62,13 +62,13 @@ export default function EventsPage() {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <LogIn className="h-10 w-10 text-emerald-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">Masuk untuk melihat event</h1>
-        <p className="text-xs text-slate-400">Event hanya terlihat dari grup yang Anda ikuti.</p>
+        <h1 className="text-lg font-bold text-white">Sign in to view events</h1>
+        <p className="text-xs text-slate-400">Events are only visible from groups you have joined.</p>
         <Link
           href="/login"
           className="inline-flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2.5 rounded-xl"
         >
-          Masuk Sekarang
+          Sign In Now
         </Link>
       </div>
     )
@@ -80,10 +80,10 @@ export default function EventsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
             <Calendar className="h-7 w-7 text-emerald-400" />
-            Turnamen & Event Padel
+            Padel Events
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Daftar event dari grup yang Anda ikuti. Pilih event untuk bergabung atau lihat skor langsung.
+            List of events from groups you have joined. Select an event to join or view live scores.
           </p>
         </div>
 
@@ -92,16 +92,16 @@ export default function EventsPage() {
           className="inline-flex items-center justify-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-4 py-2.5 rounded-xl shadow-lg transition-all"
         >
           <Plus className="h-4 w-4 stroke-[3]" />
-          Buat Event Baru
+          Create New Event
         </Link>
       </div>
 
-      {loading && <p className="text-xs text-slate-400">Memuat event...</p>}
+      {loading && <p className="text-xs text-slate-400">Loading events...</p>}
       {!loading && error && <p className="text-xs text-rose-400">{error}</p>}
       {!loading && !error && events.length === 0 && (
         <div className="text-center py-16 space-y-3">
           <Calendar className="h-10 w-10 text-emerald-700 mx-auto" />
-          <p className="text-sm text-slate-400">Belum ada event di grup Anda.</p>
+          <p className="text-sm text-slate-400">No events yet in your groups.</p>
         </div>
       )}
 
@@ -131,7 +131,7 @@ export default function EventsPage() {
                 </div>
 
                 <h3 className="text-lg font-bold text-white">{evt.title}</h3>
-                <p className="text-xs text-slate-400 font-medium">Grup: {evt.groupName}</p>
+                <p className="text-xs text-slate-400 font-medium">Group: {evt.groupName}</p>
 
                 <div className="space-y-1.5 text-xs text-slate-300 pt-1">
                   <div className="flex items-center gap-2 text-slate-400">
@@ -140,21 +140,21 @@ export default function EventsPage() {
                   </div>
                   <div className="flex items-center gap-2 text-slate-400">
                     <MapPin className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                    <span>{evt.location} ({evt.courts_count} Lapangan)</span>
+                    <span>{evt.location} ({evt.courts_count} Courts)</span>
                   </div>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-emerald-900/40 flex items-center justify-between">
                 <div className="text-xs text-slate-300">
-                  Kuota: <span className="font-bold text-white">{evt.max_players}</span> Pemain
+                  Quota: <span className="font-bold text-white">{evt.max_players}</span> Players
                 </div>
 
                 <Link
                   href={`/events/${evt.id}/live`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-3.5 py-1.5 rounded-xl"
                 >
-                  Detail & Live
+                  Details & Live
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>

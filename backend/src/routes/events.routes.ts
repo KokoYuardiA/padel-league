@@ -177,7 +177,7 @@ eventsRouter.post(
     if (eventForGenderCheck?.format === 'Mixed Partner') {
       const { data: profile } = await supabaseAdmin.from('profiles').select('gender').eq('id', userId).single()
       if (!profile?.gender) {
-        res.status(400).json({ error: 'Lengkapi gender di profil Anda sebelum mendaftar event Mixed Partner.' })
+        res.status(400).json({ error: 'Complete the gender field in your profile before registering for a Mixed Partner event.' })
         return
       }
     }
@@ -344,8 +344,8 @@ eventsRouter.post(
       promoted_user_id: result.promoted_user_id,
       promotion_window_expired: result.promotion_window_expired,
       message: result.promoted_user_id
-        ? 'Berhasil membatalkan pendaftaran. Satu pemain dari daftar tunggu telah dipromosikan.'
-        : 'Berhasil membatalkan pendaftaran.',
+        ? 'Registration successfully withdrawn. One player from the waitlist has been promoted.'
+        : 'Registration successfully withdrawn.',
     })
 
     io.to(`event:${eventId}`).emit('registrations:updated', {
@@ -412,7 +412,7 @@ eventsRouter.post(
     res.json({
       data: rankedRegistrations,
       promoted_user_id: result.promoted_user_id,
-      message: 'Pemain berhasil dipromosikan dari daftar tunggu.',
+      message: 'Player successfully promoted from the waitlist.',
     })
 
     io.to(`event:${eventId}`).emit('registrations:updated', {

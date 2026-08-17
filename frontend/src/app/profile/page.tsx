@@ -43,23 +43,23 @@ const RESULT_BADGE: Record<MatchHistoryItem['result'], string> = {
   draw: 'bg-slate-500/10 text-slate-300 border-slate-500/30',
 }
 const RESULT_LABEL: Record<MatchHistoryItem['result'], string> = {
-  win: 'Menang',
-  loss: 'Kalah',
-  draw: 'Seri',
+  win: 'Win',
+  loss: 'Loss',
+  draw: 'Draw',
 }
 
 const skillOptions = [
-  { level: 'Beginner', desc: 'Baru belajar / pemula' },
-  { level: 'Intermediate', desc: 'Pernah ikut turnamen / paham aturan' },
-  { level: 'Advanced', desc: 'Pemain rutin dengan variasi pukulan tinggi' },
-  { level: 'Pro', desc: 'Pemain level kompetisi nasional/klub' },
+  { level: 'Beginner', desc: 'Just starting out / beginner' },
+  { level: 'Intermediate', desc: 'Has played in events / understands the rules' },
+  { level: 'Advanced', desc: 'Regular player with a wide variety of shots' },
+  { level: 'Pro', desc: 'Player at national/club competition level' },
 ]
 
 // Only needed for the Mixed Partner event format (gender-balanced teams) — every
 // other format never reads this field. Not collected at signup, only here.
 const genderOptions: { value: 'Male' | 'Female'; label: string }[] = [
-  { value: 'Male', label: 'Laki-laki' },
-  { value: 'Female', label: 'Perempuan' },
+  { value: 'Male', label: 'Male' },
+  { value: 'Female', label: 'Female' },
 ]
 
 export default function ProfilePage() {
@@ -112,7 +112,7 @@ export default function ProfilePage() {
         setStatsSummary(res.data.summary)
         setMatchHistory(res.data.matches)
       })
-      .catch((err) => setStatsError(err instanceof ApiError ? err.message : 'Gagal memuat riwayat pertandingan.'))
+      .catch((err) => setStatsError(err instanceof ApiError ? err.message : 'Failed to load match history.'))
       .finally(() => setStatsLoading(false))
   }, [user, authLoading])
 
@@ -156,7 +156,7 @@ export default function ProfilePage() {
     if (uploadError) {
       setUploading(false)
       setError(
-        `Gagal mengunggah foto: ${uploadError.message}. Pastikan bucket Storage bernama "avatars" sudah dibuat di Supabase.`
+        `Failed to upload photo: ${uploadError.message}. Make sure a Storage bucket named "avatars" has been created in Supabase.`
       )
       return
     }
@@ -179,24 +179,24 @@ export default function ProfilePage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Memuat profil...</p>
+    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Loading profile...</p>
   }
 
   if (!user) {
-    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Masuk untuk melihat profil Anda.</p>
+    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Sign in to view your profile.</p>
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-extrabold text-white">Profil Pemain</h1>
-        <p className="text-xs text-slate-400">Kelola informasi pribadi dan level kemampuan padel Anda.</p>
+        <h1 className="text-2xl font-extrabold text-white">Player Profile</h1>
+        <p className="text-xs text-slate-400">Manage your personal information and padel skill level.</p>
       </div>
 
       {saved && (
         <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
           <Check className="h-4 w-4 text-lime-400" />
-          <span>Profil berhasil diperbarui!</span>
+          <span>Profile updated successfully!</span>
         </div>
       )}
 
@@ -241,7 +241,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-white">{fullName}</h3>
-            <p className="text-xs text-slate-400">{uploading ? 'Mengunggah foto...' : user.email}</p>
+            <p className="text-xs text-slate-400">{uploading ? 'Uploading photo...' : user.email}</p>
             <span className="inline-block mt-2 text-[10px] font-bold bg-emerald-950 text-lime-400 px-2 py-0.5 rounded-md border border-emerald-800">
               {skillLevel} Player
             </span>
@@ -251,7 +251,7 @@ export default function ProfilePage() {
         {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nama Lengkap</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -265,7 +265,7 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email (Terverifikasi)</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email (Verified)</label>
             <div className="relative opacity-70">
               <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -280,7 +280,7 @@ export default function ProfilePage() {
 
         <div>
           <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-            No. Telepon <span className="text-emerald-400 font-normal">(Informasi kontak)</span>
+            Phone Number <span className="text-emerald-400 font-normal">(Contact information)</span>
           </label>
           <div className="relative">
             <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
@@ -324,7 +324,7 @@ export default function ProfilePage() {
         {/* Gender Selection — only needed for the Mixed Partner event format */}
         <div>
           <label className="block text-xs font-semibold text-slate-300 mb-2">
-            Gender <span className="text-emerald-400 font-normal">(Diperlukan untuk mendaftar event format Mixed Partner)</span>
+            Gender <span className="text-emerald-400 font-normal">(Required to register for Mixed Partner format events)</span>
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {genderOptions.map((opt) => (
@@ -352,33 +352,33 @@ export default function ProfilePage() {
             className="inline-flex items-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
             <Save className="h-4 w-4 stroke-[2.5]" />
-            {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>
 
-      {/* Statistik & Riwayat Pertandingan */}
+      {/* Statistics & Match History */}
       <div className="space-y-4">
         <div className="space-y-1">
           <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
             <Trophy className="h-5 w-5 text-lime-400" />
-            Statistik & Riwayat Pertandingan
+            Statistics & Match History
           </h2>
-          <p className="text-xs text-slate-400">Rekap seluruh pertandingan terkonfirmasi lintas grup yang pernah Anda ikuti.</p>
+          <p className="text-xs text-slate-400">Summary of all confirmed matches across groups you have joined.</p>
         </div>
 
         {statsLoading ? (
-          <p className="text-xs text-slate-400">Memuat riwayat pertandingan...</p>
+          <p className="text-xs text-slate-400">Loading match history...</p>
         ) : statsError ? (
           <p className="text-xs text-rose-400">{statsError}</p>
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: 'Match Dimainkan', value: statsSummary?.matchesPlayed ?? 0 },
-                { label: 'Menang', value: statsSummary?.wins ?? 0 },
+                { label: 'Matches Played', value: statsSummary?.matchesPlayed ?? 0 },
+                { label: 'Wins', value: statsSummary?.wins ?? 0 },
                 { label: 'Win Rate', value: `${statsSummary?.winRatePercent ?? 0}%` },
-                { label: 'Total Poin', value: statsSummary?.totalPoints ?? 0 },
+                { label: 'Total Points', value: statsSummary?.totalPoints ?? 0 },
               ].map((stat) => (
                 <div key={stat.label} className="p-3.5 rounded-2xl glass-card border border-emerald-900/50">
                   <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{stat.label}</p>
@@ -389,7 +389,7 @@ export default function ProfilePage() {
 
             {matchHistory.length === 0 ? (
               <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
-                Belum ada riwayat pertandingan.
+                No match history yet.
               </p>
             ) : (
               <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
@@ -397,12 +397,12 @@ export default function ProfilePage() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                        <th className="py-3.5 px-4">Tanggal</th>
-                        <th className="py-3.5 px-4">Event / Grup</th>
+                        <th className="py-3.5 px-4">Date</th>
+                        <th className="py-3.5 px-4">Event / Group</th>
                         <th className="py-3.5 px-4">Format</th>
-                        <th className="py-3.5 px-4">Lawan</th>
-                        <th className="py-3.5 px-4">Skor</th>
-                        <th className="py-3.5 px-4 text-right">Hasil</th>
+                        <th className="py-3.5 px-4">Opponent</th>
+                        <th className="py-3.5 px-4">Score</th>
+                        <th className="py-3.5 px-4 text-right">Result</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-emerald-900/40 text-xs">

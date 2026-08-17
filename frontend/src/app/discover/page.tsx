@@ -22,7 +22,7 @@ export default function DiscoverPage() {
   useEffect(() => {
     apiFetch<{ data: PublicGroup[] }>('/api/public/groups')
       .then((res) => setGroups(res.data))
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Gagal memuat grup publik.'))
+      .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load public groups.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -35,10 +35,10 @@ export default function DiscoverPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
             <Compass className="h-7 w-7 text-emerald-400" />
-            Jelajahi Grup Komunitas
+            Explore Community Groups
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Grup publik yang bisa dilihat siapa saja. Masuk atau daftar untuk bergabung lewat link undangan.
+            Public groups visible to anyone. Sign in or register to join via an invite link.
           </p>
         </div>
       </div>
@@ -50,18 +50,18 @@ export default function DiscoverPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Cari grup klub padel..."
+          placeholder="Search padel club groups..."
           className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
         />
       </div>
 
       {/* Loading / Error / Empty States */}
-      {loading && <p className="text-xs text-slate-400">Memuat grup publik...</p>}
+      {loading && <p className="text-xs text-slate-400">Loading public groups...</p>}
       {!loading && error && <p className="text-xs text-rose-400">{error}</p>}
       {!loading && !error && filteredGroups.length === 0 && (
         <div className="text-center py-16 space-y-3">
           <Compass className="h-10 w-10 text-emerald-700 mx-auto" />
-          <p className="text-sm text-slate-400">Belum ada grup publik yang bisa dijelajahi.</p>
+          <p className="text-sm text-slate-400">No public groups to explore yet.</p>
         </div>
       )}
 
@@ -94,7 +94,7 @@ export default function DiscoverPage() {
                   href={`/discover/${grp.id}`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-slate-200 hover:text-emerald-400 hover:bg-emerald-900/40 px-3 py-1.5 rounded-lg transition-colors"
                 >
-                  Buka Detail
+                  View Details
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>

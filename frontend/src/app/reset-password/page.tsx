@@ -20,7 +20,7 @@ export default function ResetPasswordPage() {
     setError('')
 
     if (password !== confirmPassword) {
-      setError('Password dan konfirmasi password tidak cocok.')
+      setError('Password and confirmation password do not match.')
       return
     }
 
@@ -39,20 +39,20 @@ export default function ResetPasswordPage() {
   }
 
   if (authLoading) {
-    return <p className="max-w-md mx-auto px-4 py-20 text-center text-xs text-slate-400">Memuat...</p>
+    return <p className="max-w-md mx-auto px-4 py-20 text-center text-xs text-slate-400">Loading...</p>
   }
 
   if (!user) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <AlertCircle className="h-10 w-10 text-rose-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">Link tidak valid atau sudah kadaluarsa</h1>
-        <p className="text-xs text-slate-400">Silakan minta link reset password baru.</p>
+        <h1 className="text-lg font-bold text-white">Link is invalid or has expired</h1>
+        <p className="text-xs text-slate-400">Please request a new password reset link.</p>
         <Link
           href="/forgot-password"
           className="inline-flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2.5 rounded-xl"
         >
-          Minta Link Baru
+          Request New Link
         </Link>
       </div>
     )
@@ -65,8 +65,8 @@ export default function ResetPasswordPage() {
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-lime-400 shadow-lg shadow-emerald-500/20 mb-2">
             <Trophy className="h-6 w-6 text-emerald-950 stroke-[2.5]" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white">Buat Password Baru</h2>
-          <p className="text-xs text-slate-400">Masukkan password baru untuk akun Anda</p>
+          <h2 className="text-2xl font-extrabold text-white">Create New Password</h2>
+          <p className="text-xs text-slate-400">Enter a new password for your account</p>
         </div>
 
         {error && (
@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password Baru</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">New Password</label>
             <div className="relative">
               <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -87,14 +87,14 @@ export default function ResetPasswordPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
+                placeholder="At least 6 characters"
                 className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Konfirmasi Password</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Confirm Password</label>
             <div className="relative">
               <Check className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                 minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi password baru"
+                placeholder="Repeat your new password"
                 className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
             disabled={loading}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
           >
-            {loading ? 'Menyimpan...' : 'Simpan Password Baru'}
+            {loading ? 'Saving...' : 'Save New Password'}
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </form>

@@ -56,10 +56,10 @@ export default function RegisterPage() {
   }
 
   const skillOptions = [
-    { level: 'Beginner', desc: 'Baru belajar / pemula' },
-    { level: 'Intermediate', desc: 'Pernah ikut turnamen / paham aturan' },
-    { level: 'Advanced', desc: 'Pemain rutin dengan variasi pukulan tinggi' },
-    { level: 'Pro', desc: 'Pemain level kompetisi nasional/klub' },
+    { level: 'Beginner', desc: 'Just starting out / beginner' },
+    { level: 'Intermediate', desc: 'Has played in events before / understands the rules' },
+    { level: 'Advanced', desc: 'Regular player with a wide variety of shots' },
+    { level: 'Pro', desc: 'Player at national/club competition level' },
   ]
 
   return (
@@ -70,8 +70,8 @@ export default function RegisterPage() {
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-lime-400 shadow-lg shadow-emerald-500/20 mb-2">
             <Trophy className="h-6 w-6 text-emerald-950 stroke-[2.5]" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white">Daftar Akun Pemain</h2>
-          <p className="text-xs text-slate-400">Bergabung dengan komunitas padel & ikuti turnamen</p>
+          <h2 className="text-2xl font-extrabold text-white">Register Player Account</h2>
+          <p className="text-xs text-slate-400">Join the padel community & take part in events</p>
         </div>
 
         {/* Error Alert */}
@@ -87,7 +87,7 @@ export default function RegisterPage() {
           <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
             <Check className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
             <span>
-              Akun berhasil dibuat! Cek email <strong>{email}</strong> untuk konfirmasi sebelum masuk.
+              Account created successfully! Check the email <strong>{email}</strong> for confirmation before signing in.
             </span>
           </div>
         )}
@@ -96,7 +96,7 @@ export default function RegisterPage() {
         {!checkEmail && (
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nama Lengkap</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
               <input
@@ -119,7 +119,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="nama@email.com"
+                placeholder="name@email.com"
                 className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              No. Telepon <span className="text-emerald-400 font-normal">(Wajib diisi)</span>
+              Phone Number <span className="text-emerald-400 font-normal">(Required)</span>
             </label>
             <div className="relative">
               <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
+                placeholder="At least 6 characters"
                 className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
@@ -160,7 +160,7 @@ export default function RegisterPage() {
           {/* Skill Level Selection */}
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-2">
-              Pilih Skill Level Anda (Self-Declared)
+              Select Your Skill Level (Self-Declared)
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {skillOptions.map((opt) => (
@@ -189,7 +189,7 @@ export default function RegisterPage() {
             disabled={loading}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-4"
           >
-            {loading ? 'Memproses...' : 'Buat Akun Sekarang'}
+            {loading ? 'Processing...' : 'Create Account Now'}
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </form>
@@ -197,9 +197,9 @@ export default function RegisterPage() {
 
         {/* Footer Link */}
         <div className="pt-4 border-t border-emerald-900/40 text-center text-xs text-slate-400">
-          Sudah memiliki akun?{' '}
+          Already have an account?{' '}
           <Link href="/login" className="font-bold text-lime-400 hover:underline">
-            Masuk ke Akun Anda
+            Sign In to Your Account
           </Link>
         </div>
       </div>

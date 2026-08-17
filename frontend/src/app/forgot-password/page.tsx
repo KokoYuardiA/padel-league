@@ -40,8 +40,8 @@ export default function ForgotPasswordPage() {
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-lime-400 shadow-lg shadow-emerald-500/20 mb-2">
             <Trophy className="h-6 w-6 text-emerald-950 stroke-[2.5]" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white">Lupa Password</h2>
-          <p className="text-xs text-slate-400">Masukkan email Anda untuk menerima link reset password</p>
+          <h2 className="text-2xl font-extrabold text-white">Forgot Password</h2>
+          <p className="text-xs text-slate-400">Enter your email to receive a password reset link</p>
         </div>
 
         {error && (
@@ -55,8 +55,8 @@ export default function ForgotPasswordPage() {
           <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
             <Check className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
             <span>
-              Jika <strong>{email}</strong> terdaftar, kami sudah mengirim link reset password. Cek inbox
-              (dan folder spam) Anda.
+              If <strong>{email}</strong> is registered, we have sent a password reset link. Check your inbox
+              (and spam folder).
             </span>
           </div>
         ) : (
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@email.com"
+                  placeholder="name@email.com"
                   className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
                 />
               </div>
@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
               disabled={loading}
               className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
             >
-              {loading ? 'Mengirim...' : 'Kirim Link Reset'}
+              {loading ? 'Sending...' : 'Send Reset Link'}
               {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
             </button>
           </form>
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
 
         <div className="pt-4 border-t border-emerald-900/40 text-center text-xs text-slate-400">
           <Link href="/login" className="inline-flex items-center gap-1.5 font-bold text-lime-400 hover:underline">
-            <ArrowLeft className="h-3.5 w-3.5" /> Kembali ke Halaman Masuk
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Sign In Page
           </Link>
         </div>
       </div>

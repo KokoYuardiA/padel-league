@@ -48,19 +48,19 @@ export default function Home() {
         {/* Status Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md mb-8 animate-fade-in">
           <Sparkles className="h-3.5 w-3.5 text-lime-400 fill-lime-400" />
-          <span>Platform Turnamen Padel Modern #1</span>
+          <span>The #1 Modern Padel Event Platform</span>
           <span className="h-1.5 w-1.5 rounded-full bg-lime-400 animate-pulse" />
         </div>
 
         {/* Main Title */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
-          Kelola Turnamen Padel <br className="hidden sm:inline" />
-          <span className="gradient-text">Otomatis & Real-Time</span>
+          Manage Padel Events <br className="hidden sm:inline" />
+          <span className="gradient-text">Automated & Real-Time</span>
         </h1>
 
         {/* Subtitle */}
         <p className="max-w-3xl mx-auto text-base sm:text-xl text-slate-300 font-normal leading-relaxed mb-10">
-          Buat event, otomatisasi jadwal pertandingan & alokasi lapangan, jalankan skor langsung dengan konfirmasi otomatis pemain, dan dapatkan klasemen real-time tanpa spreadsheet.
+          Create events, automate match schedules & court allocation, run live scoring with automatic player confirmation, and get real-time standings without spreadsheets.
         </p>
 
         {/* Action Buttons */}
@@ -69,14 +69,14 @@ export default function Home() {
             href="/register"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 text-base font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-7 py-3.5 rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-200 group"
           >
-            Buat Event Sekarang
+            Create Event Now
             <ArrowRight className="h-5 w-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="#formats"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-base font-semibold text-slate-200 hover:text-white bg-emerald-900/30 border border-emerald-700/40 hover:bg-emerald-900/50 px-6 py-3.5 rounded-2xl backdrop-blur-md transition-all duration-200"
           >
-            Lihat 5 Format Match
+            View 5 Match Formats
           </Link>
         </div>
 
@@ -169,13 +169,13 @@ export default function Home() {
       <section id="formats" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center w-full">
         <div className="max-w-3xl mx-auto mb-16">
           <h2 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">
-            Algoritma Schedulers
+            Scheduling Algorithms
           </h2>
           <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Mendukung 5 Format Pertandingan Padel
+            Supports 5 Padel Match Formats
           </p>
           <p className="text-slate-400 mt-3 text-sm sm:text-base">
-            Sistem kami membuat rotasi pasangan, alokasi lapangan, dan babak secara otomatis tanpa mengulang pasangan yang sama secara konsisten.
+            Our system automatically generates partner rotations, court allocation, and rounds without consistently repeating the same pairings.
           </p>
         </div>
 
@@ -183,33 +183,33 @@ export default function Home() {
           {[
             {
               name: 'Americano',
-              desc: 'Rotasi pasangan & lawan setiap babak. Poin individu diakumulasi.',
+              desc: 'Partners and opponents rotate every round. Individual points are accumulated.',
               icon: RotateCw,
-              tag: 'Paling Populer',
+              tag: 'Most Popular',
             },
             {
               name: 'Mexicano',
-              desc: 'Pasangan disesuaikan dengan peringkat klasemen sementara per babak.',
+              desc: 'Partners are matched based on current standings each round.',
               icon: Flame,
-              tag: 'Kompetitif',
+              tag: 'Competitive',
             },
             {
               name: 'Fixed Partner',
-              desc: 'Pasangan tetap sepanjang event. Lawan berotasi setiap babak.',
+              desc: 'Partners stay fixed throughout the event. Opponents rotate every round.',
               icon: Users,
-              tag: 'Duet Tim',
+              tag: 'Team Duo',
             },
             {
               name: 'Mixed Partner',
-              desc: 'Format ganda campuran dengan syarat komposisi gender seimbang.',
+              desc: 'Mixed doubles format requiring balanced gender composition.',
               icon: Sparkles,
-              tag: 'Campuran',
+              tag: 'Mixed',
             },
             {
               name: 'Round Robin',
-              desc: 'Setiap tim bertemu lawan yang sama tepat satu kali.',
+              desc: 'Every team meets the same opponent exactly once.',
               icon: Activity,
-              tag: 'Sistem Liga',
+              tag: 'League System',
             },
           ].map((item, idx) => (
             <div
@@ -240,36 +240,36 @@ export default function Home() {
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
         <div className="space-y-6 text-center">
           <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
-            Dirancang Khusus Komunitas Padel
+            Designed Specifically for the Padel Community
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-            Fitur Lengkap dari Pendaftaran hingga Klasemen Akhir
+            Complete Features from Registration to Final Standings
           </h2>
           <p className="text-slate-300 text-sm leading-relaxed max-w-2xl mx-auto">
-            Platform Rally Hub menggantikan tugas manual organizer dengan otomatisasi menyeluruh. Dari pendaftaran pemain hingga penentuan juara.
+            The Rally Hub platform replaces manual organizer tasks with end-to-end automation. From player registration to determining the champion.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-10">
           {[
             {
-              title: 'Self-Reported Score & Konfirmasi Pemain',
-              desc: 'Pemain menginput skor sendiri, lalu partner/lawan melakukan konfirmasi. Mencegah manipulasi skor.',
+              title: 'Self-Reported Score & Player Confirmation',
+              desc: 'Players enter their own score, then partners/opponents confirm it. Prevents score manipulation.',
               icon: CheckCircle2,
             },
             {
-              title: 'Update Klasemen & Lapangan Real-Time',
-              desc: 'Menggunakan WebSocket (Socket.IO). Semua penonton dan pemain melihat skor tanpa perlu refresh.',
+              title: 'Real-Time Standings & Court Updates',
+              desc: 'Powered by WebSocket (Socket.IO). All spectators and players see scores update without needing to refresh.',
               icon: Zap,
             },
             {
-              title: 'Isolasi Komunitas & Multi-Tenant',
-              desc: 'Setiap klub/grup memiliki ruang data sendiri. Privasi anggota dan statistik event terjamin.',
+              title: 'Community Isolation & Multi-Tenant',
+              desc: 'Every club/group has its own data space. Member privacy and event statistics are guaranteed.',
               icon: Shield,
             },
             {
-              title: 'Undangan QR Code & Link Publik',
-              desc: 'Undang anggota grup atau pendaftar event dengan cepat menggunakan QR code atau link instant.',
+              title: 'QR Code Invitations & Public Links',
+              desc: 'Quickly invite group members or event registrants using a QR code or an instant link.',
               icon: QrCode,
             },
           ].map((feature, i) => (
@@ -291,23 +291,23 @@ export default function Home() {
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-900/80 via-emerald-950 to-slate-950 border border-emerald-700/50 shadow-2xl relative overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Siap Menjalankan Event Padel Pertama Anda?
+              Ready to Run Your First Padel Event?
             </h2>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Bergabung sekarang sebagai pemain atau buat grup klub Anda secara gratis dalam hitungan menit.
+              Join now as a player or create your club group for free in just a few minutes.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <Link
                 href="/register"
                 className="w-full sm:w-auto text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-8 py-3.5 rounded-xl shadow-lg transition-all"
               >
-                Daftar Akun Gratis
+                Sign Up for Free
               </Link>
               <Link
                 href="/login"
                 className="w-full sm:w-auto text-sm font-semibold text-slate-200 hover:text-white bg-emerald-900/40 border border-emerald-800 px-6 py-3.5 rounded-xl"
               >
-                Sudah Punya Akun? Masuk
+                Already Have an Account? Sign In
               </Link>
             </div>
           </div>
