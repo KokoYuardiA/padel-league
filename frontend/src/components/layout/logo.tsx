@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Trophy } from 'lucide-react'
+import Image from 'next/image'
 
 const ICON_BOX_SIZE = {
   sm: 'h-9 w-9',
@@ -7,10 +7,10 @@ const ICON_BOX_SIZE = {
   lg: 'h-12 w-12',
 } as const
 
-const ICON_SIZE = {
-  sm: 'h-4 w-4',
-  md: 'h-5 w-5',
-  lg: 'h-6 w-6',
+const ICON_PX = {
+  sm: 36,
+  md: 40,
+  lg: 48,
 } as const
 
 interface LogoProps {
@@ -20,27 +20,20 @@ interface LogoProps {
   className?: string
 }
 
-/**
- * Placeholder brand mark (icon box + wordmark) until a real logo image is
- * supplied. The icon box below is the one unit to swap for an <Image> once
- * that arrives — wordmark/subtitle logic can stay as-is.
- */
 export function Logo({ size = 'md', showWordmark = true, showSubtitle = false, className = '' }: LogoProps) {
   return (
     <Link href="/" className={`flex items-center gap-2.5 group ${className}`}>
-      <div
-        className={`flex ${ICON_BOX_SIZE[size]} items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-lime-500 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200`}
-      >
-        <Trophy className={`${ICON_SIZE[size]} text-emerald-950 stroke-[2.5]`} />
+      <div className={`relative ${ICON_BOX_SIZE[size]} shrink-0 group-hover:scale-105 transition-transform duration-200`}>
+        <Image src="/brand/icon.svg" alt="Rally Hub" fill sizes={`${ICON_PX[size]}px`} priority />
       </div>
       {showWordmark && (
         <div className="flex flex-col">
           <span className="font-bold text-lg leading-none tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-            Rally<span className="text-lime-400">Hub</span>
+            Rally<span className="text-[#C6E70A]">Hub</span>
           </span>
           {showSubtitle && (
             <span className="text-[10px] leading-tight font-medium text-emerald-400/80 uppercase tracking-widest">
-              Community Platform
+              Play. Connect. Compete.
             </span>
           )}
         </div>
