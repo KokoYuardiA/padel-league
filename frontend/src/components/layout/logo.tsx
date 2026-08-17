@@ -24,7 +24,14 @@ export function Logo({ size = 'md', showWordmark = true, showSubtitle = false, c
   return (
     <Link href="/" className={`flex items-center gap-2.5 group ${className}`}>
       <div className={`relative ${ICON_BOX_SIZE[size]} shrink-0 group-hover:scale-105 transition-transform duration-200`}>
-        <Image src="/brand/icon.svg" alt="Rally Hub" fill sizes={`${ICON_PX[size]}px`} priority />
+        <Image
+          src="/brand/icon.svg"
+          alt="Rally Hub"
+          fill
+          sizes={`${ICON_PX[size]}px`}
+          className="object-contain"
+          priority
+        />
       </div>
       {showWordmark && (
         <div className="flex flex-col">
