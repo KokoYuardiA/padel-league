@@ -126,8 +126,8 @@ export default function EventLivePage() {
   const [scoreModalMode, setScoreModalMode] = useState<'self' | 'override'>('self')
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<MatchItem | null>(null)
-  const [scoreTeamA, setScoreTeamA] = useState(21)
-  const [scoreTeamB, setScoreTeamB] = useState(15)
+  const [scoreTeamA, setScoreTeamA] = useState(0)
+  const [scoreTeamB, setScoreTeamB] = useState(0)
   const [actionError, setActionError] = useState('')
 
   const isOrganizerOrAdmin = myGroupRole === 'Organizer' || myGroupRole === 'Group Admin'
@@ -268,8 +268,8 @@ export default function EventLivePage() {
 
   const handleOpenScoreModal = (m: MatchItem) => {
     setSelectedMatch(m)
-    setScoreTeamA(m.score_a ?? 21)
-    setScoreTeamB(m.score_b ?? 15)
+    setScoreTeamA(m.score_a ?? 0)
+    setScoreTeamB(m.score_b ?? 0)
     setScoreModalMode('self')
     setActionError('')
     setShowInputModal(true)
@@ -277,8 +277,8 @@ export default function EventLivePage() {
 
   const handleOpenOverrideModal = (m: MatchItem) => {
     setSelectedMatch(m)
-    setScoreTeamA(m.score_a ?? 21)
-    setScoreTeamB(m.score_b ?? 15)
+    setScoreTeamA(m.score_a ?? 0)
+    setScoreTeamB(m.score_b ?? 0)
     setScoreModalMode('override')
     setActionError('')
     setShowInputModal(true)
