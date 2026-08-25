@@ -56,11 +56,18 @@ app.use((_req, res) => {
 app.use(errorHandler)
 
 // ── Start Server ─────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`
-  ✅ Rally Hub — Backend API Server
-  🌐 REST API:  http://localhost:${PORT}/api
-  🔍 Health:    http://localhost:${PORT}/health
-  🌍 CORS:      ${FRONTEND_URL}
-  `)
-})
+// Only listen on a port for local dev / traditional hosts (Render, etc).
+// On Vercel, this module is imported by api/index.ts as a serverless
+// function handler instead — no port to bind there.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`
+    ✅ Rally Hub — Backend API Server
+    🌐 REST API:  http://localhost:${PORT}/api
+    🔍 Health:    http://localhost:${PORT}/health
+    🌍 CORS:      ${FRONTEND_URL}
+    `)
+  })
+}
+
+export default app
