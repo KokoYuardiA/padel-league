@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
   Calendar,
@@ -30,6 +30,14 @@ const EVENT_FORMATS = [
 ]
 
 export default function CreateEventPage() {
+  return (
+    <Suspense fallback={null}>
+      <CreateEventForm />
+    </Suspense>
+  )
+}
+
+function CreateEventForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
 

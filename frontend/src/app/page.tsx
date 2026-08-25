@@ -130,7 +130,7 @@ export default function Home() {
 
               <div className="mt-3 pt-2 border-t border-emerald-800/30 flex items-center justify-between text-xs text-slate-400">
                 <span>Self-reported by Rizky</span>
-                <span className="text-emerald-400 font-medium">Pending Alex's Confirm</span>
+                <span className="text-emerald-400 font-medium">Pending Alex&apos;s Confirm</span>
               </div>
             </div>
 
