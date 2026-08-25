@@ -1,5 +1,4 @@
 import { Router, Response } from 'express'
-import { Server as SocketIOServer } from 'socket.io'
 import { requireAuth, AuthenticatedRequest } from '../middlewares/auth.middleware'
 import {
   requireGroupRole,
@@ -54,8 +53,7 @@ export const UpdateEventStatusSchema = z.object({
   status: z.enum(EVENT_STATUSES),
 })
 
-export function createEventsRouter(io: SocketIOServer) {
-  const eventsRouter = Router()
+export const eventsRouter = Router()
 
 // ── GET /api/events?group_id=... ────────────────────────────
 // List events for a group the user is a member of
@@ -347,12 +345,6 @@ eventsRouter.post(
         ? 'Registration successfully withdrawn. One player from the waitlist has been promoted.'
         : 'Registration successfully withdrawn.',
     })
-
-    io.to(`event:${eventId}`).emit('registrations:updated', {
-      event_id: eventId,
-      registrations: rankedRegistrations,
-      promoted_user_id: result.promoted_user_id,
-    })
   }
 )
 
@@ -414,14 +406,5 @@ eventsRouter.post(
       promoted_user_id: result.promoted_user_id,
       message: 'Player successfully promoted from the waitlist.',
     })
-
-    io.to(`event:${eventId}`).emit('registrations:updated', {
-      event_id: eventId,
-      registrations: rankedRegistrations,
-      promoted_user_id: result.promoted_user_id,
-    })
   }
 )
-
-  return eventsRouter
-}

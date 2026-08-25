@@ -13,7 +13,7 @@ club/league), free-tier limits are very unlikely to ever be hit.
 | Layer | Service | Free tier caveat |
 |---|---|---|
 | Database, Auth, Storage | [Supabase](https://supabase.com) | Project auto-pauses after 7 days with zero activity (see §6) |
-| Backend (Express + Socket.IO) | [Render](https://render.com) | Free web services sleep after 15 min idle; first request after sleep takes ~30-50s to wake up |
+| Backend (Express) | [Render](https://render.com) | Free web services sleep after 15 min idle; first request after sleep takes ~30-50s to wake up |
 | Frontend (Next.js) | [Vercel](https://vercel.com) | Hobby plan's ToS is scoped to non-commercial use — see note in §3 |
 | Uptime monitoring | [UptimeRobot](https://uptimerobot.com) | Free plan checks every 5 min, alerts by email |
 | Keep-alive ping | GitHub Actions (scheduled workflow) | Free, unlimited minutes on public repos |
@@ -39,6 +39,7 @@ Sign up for every service below using the dedicated GitHub account (or an email 
    - `migrations/0008_platform_admin_and_group_suspension.sql`
    - `migrations/0009_avatars_storage_bucket.sql`
    - `migrations/0010_manual_registration_promotion.sql`
+   - `migrations/0011_enable_realtime_for_live_scoring.sql`
 3. **Authentication → Providers**: turn on **Confirm email** (rejects fake/typo'd email signups).
 4. **Authentication → URL Configuration**: leave this open for now — it needs the production frontend
    URL, which doesn't exist until §3 is done. Come back to it in §4.
@@ -48,6 +49,14 @@ Sign up for every service below using the dedicated GitHub account (or an email 
    - `service_role` key — **secret**, backend-only, never exposed to the frontend
 
 ## 2. Backend — Render
+
+> **Why Render, and why it's no longer strictly required:** live scoring used to run on self-hosted
+> Socket.IO, which needs a host that keeps a persistent process alive — Render's free tier fits that.
+> Live scoring has since moved to Supabase Realtime (Postgres Changes), so the backend is now a plain
+> stateless REST API with no persistent-connection requirement at all. Render below still works fine and
+> needs no changes, but this also means a genuinely serverless host (including Vercel's own backend
+> support) is now a valid alternative if Render's card-verification step becomes a blocker — that's a
+> separate decision to make at actual deploy time, not something this guide prescribes.
 
 1. New → Web Service → connect the forked repo.
 2. **Root Directory**: `backend`

@@ -69,9 +69,9 @@ dedicated, deliberately unauthenticated read-only surface (`backend/src/routes/p
 | UC-P11 | Withdraw registration from an event | ✅ | `POST /api/events/:id/withdraw` — self-service only. If the withdrawing player was `registered` (not `waiting_list`) and it's still before the promotion cutoff (registration deadline / event start, whichever is earlier), the earliest waitlisted player is auto-promoted atomically. A promotion after a static-format schedule already exists doesn't retroactively add the player to any match (Mexicano is unaffected by this since it regenerates each round from live registration state) |
 | UC-P12 | View the live match schedule for an event | ✅ | UI fully works, and an Organizer can now generate real matches for **all 5 formats** (UC-O2) |
 | UC-P13 | Self-report a match score | ✅ | Either player on the match can do this; blocked once a score is `pending_confirmation` |
-| UC-P14 | Confirm an opponent-reported score | ✅ | Only the designated `needs_confirm_by` player can act |
+| UC-P14 | Confirm an opponent-reported score | ✅ | Either player on the opposing team (the team `needs_confirm_by` designates) can act |
 | UC-P15 | Dispute an opponent-reported score | ✅ | Wipes the score, match reopens for re-entry by either player |
-| UC-P16 | View live leaderboard during an event | ✅ | Real-time via Socket.IO; also computed correctly on initial page load |
+| UC-P16 | View live leaderboard during an event | ✅ | Real-time via Supabase Realtime (Postgres Changes); also computed correctly on initial page load |
 | UC-P17 | View match history / personal stats after an event | ✅ | `GET /api/players/me/stats` — computed on-the-fly from confirmed `matches` across every group the player has ever played in (self-scoped, no persisted stats table). Quick summary (wins, points) on the Dashboard; full match-by-match history table on the Profile page |
 
 ---

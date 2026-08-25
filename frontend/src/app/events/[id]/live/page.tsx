@@ -20,7 +20,7 @@ import {
 } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
-import { getSocket } from '@/lib/socket'
+import { createClient } from '@/lib/supabase/client'
 
 interface PlayerRef {
   id: string
@@ -157,42 +157,76 @@ export default function EventLivePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId, authLoading, user])
 
+  // Realtime via Supabase Postgres Changes (replaces the old Socket.IO layer).
+  // Score updates/confirms/disputes all collapse into one `matches` UPDATE
+  // subscription since they only ever merge-patch the same fields. A new
+  // schedule (or next round) shows up as a burst of `matches` INSERT events —
+  // Postgres Changes delivers one message per row, not per statement, so we
+  // debounce and refetch the enriched list rather than reconstruct it from
+  // raw rows. Registration changes (withdraw, promote, and now also brand
+  // new registrations — a gap the old Socket.IO code had) all refetch the
+  // event's registrations the same way.
   useEffect(() => {
     if (!eventId || !user) return
-    const socket = getSocket()
-    socket.connect()
-    socket.emit('join:event', eventId)
 
-    const onScoreUpdated = ({ match }: { match: MatchPatchResult }) =>
-      setMatches((prev) => mergeMatchUpdate(prev, match))
-    const onScoreConfirmed = ({ match }: { match: MatchPatchResult }) =>
-      setMatches((prev) => mergeMatchUpdate(prev, match))
-    const onScoreDisputed = ({ match }: { match: MatchPatchResult }) =>
-      setMatches((prev) => mergeMatchUpdate(prev, match))
-    // Unlike the single-match patches above, a freshly generated schedule
-    // didn't exist before — this is a full-array replace, not a merge.
-    const onScheduleGenerated = ({ matches: newMatches }: { matches: MatchItem[] }) =>
-      setMatches(newMatches)
-    // A withdrawal (or the auto-promotion it triggers) changes more than just
-    // the caller's own row — everyone's waiting-list position can shift — so
-    // this is a full-array replace of `registrations`, not a per-row merge.
-    const onRegistrationsUpdated = ({ registrations }: { registrations: Registration[] }) =>
-      setEvent((prev) => (prev ? { ...prev, registrations } : prev))
+    const supabase = createClient()
+    let isFetchingMatches = false
+    let pendingMatchesRefetch = false
+    let matchesDebounceTimer: ReturnType<typeof setTimeout> | null = null
 
-    socket.on('score:updated', onScoreUpdated)
-    socket.on('score:confirmed', onScoreConfirmed)
-    socket.on('score:disputed', onScoreDisputed)
-    socket.on('schedule:generated', onScheduleGenerated)
-    socket.on('registrations:updated', onRegistrationsUpdated)
+    const refetchMatches = () => {
+      if (isFetchingMatches) {
+        pendingMatchesRefetch = true
+        return
+      }
+      isFetchingMatches = true
+      apiFetch<{ data: MatchItem[] }>(`/api/matches?event_id=${eventId}`)
+        .then(({ data }) => setMatches(data))
+        .catch(() => {})
+        .finally(() => {
+          isFetchingMatches = false
+          if (pendingMatchesRefetch) {
+            pendingMatchesRefetch = false
+            refetchMatches()
+          }
+        })
+    }
+
+    const scheduleMatchesRefetch = () => {
+      if (matchesDebounceTimer) clearTimeout(matchesDebounceTimer)
+      matchesDebounceTimer = setTimeout(refetchMatches, 300)
+    }
+
+    const refetchRegistrations = () => {
+      apiFetch<{ data: EventDetail }>(`/api/events/${eventId}`)
+        .then(({ data }) =>
+          setEvent((prev) => (prev ? { ...prev, registrations: data.registrations ?? [] } : prev))
+        )
+        .catch(() => {})
+    }
+
+    const channel = supabase
+      .channel(`event-${eventId}`)
+      .on<MatchPatchResult>(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'matches', filter: `event_id=eq.${eventId}` },
+        (payload) => setMatches((prev) => mergeMatchUpdate(prev, payload.new))
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'matches', filter: `event_id=eq.${eventId}` },
+        scheduleMatchesRefetch
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'event_registrations', filter: `event_id=eq.${eventId}` },
+        refetchRegistrations
+      )
+      .subscribe()
 
     return () => {
-      socket.emit('leave:event', eventId)
-      socket.off('score:updated', onScoreUpdated)
-      socket.off('score:confirmed', onScoreConfirmed)
-      socket.off('score:disputed', onScoreDisputed)
-      socket.off('schedule:generated', onScheduleGenerated)
-      socket.off('registrations:updated', onRegistrationsUpdated)
-      socket.disconnect()
+      if (matchesDebounceTimer) clearTimeout(matchesDebounceTimer)
+      supabase.removeChannel(channel)
     }
   }, [eventId, user])
 
@@ -265,6 +299,16 @@ export default function EventLivePage() {
   const isPlayerInMatch = (m: MatchItem) =>
     !!user &&
     [m.team_a_player1.id, m.team_a_player2?.id, m.team_b_player1.id, m.team_b_player2?.id].includes(user.id)
+
+  // Either player on the team designated to confirm may act — not just the
+  // one specific id the backend happened to record in needs_confirm_by.
+  const canConfirmMatch = (m: MatchItem) => {
+    if (!user || !m.needs_confirm_by) return false
+    const teamA = [m.team_a_player1.id, m.team_a_player2?.id]
+    const teamB = [m.team_b_player1.id, m.team_b_player2?.id]
+    const confirmerTeam = teamA.includes(m.needs_confirm_by) ? teamA : teamB
+    return confirmerTeam.includes(user.id)
+  }
 
   const handleOpenScoreModal = (m: MatchItem) => {
     setSelectedMatch(m)
@@ -740,7 +784,7 @@ export default function EventLivePage() {
                           <p className="text-[10px] text-amber-300 text-center">
                             Entered by {nameById.get(m.reported_by ?? '') ?? 'Player'}. Waiting for opponent confirmation.
                           </p>
-                          {m.needs_confirm_by === user?.id && (
+                          {canConfirmMatch(m) && (
                             <button
                               onClick={() => handleConfirmScore(m)}
                               className="w-full py-2 text-xs font-bold text-emerald-950 bg-lime-400 hover:bg-lime-300 rounded-xl transition-all flex items-center justify-center gap-1.5"

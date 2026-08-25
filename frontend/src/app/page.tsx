@@ -259,7 +259,7 @@ export default function Home() {
             },
             {
               title: 'Real-Time Standings & Court Updates',
-              desc: 'Powered by WebSocket (Socket.IO). All spectators and players see scores update without needing to refresh.',
+              desc: 'Powered by Supabase Realtime. All spectators and players see scores update without needing to refresh.',
               icon: Zap,
             },
             {

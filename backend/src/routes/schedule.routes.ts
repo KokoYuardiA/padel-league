@@ -1,5 +1,4 @@
 import { Router, Response } from 'express'
-import { Server as SocketIOServer } from 'socket.io'
 import { requireAuth, AuthenticatedRequest } from '../middlewares/auth.middleware'
 import { requireGroupRole, groupIdFromEventParam, ORGANIZER_OR_ADMIN } from '../middlewares/rbac.middleware'
 import { supabaseAdmin } from '../lib/supabase'
@@ -38,13 +37,9 @@ function buildScheduleWarning(opts: {
   return warnings.length > 0 ? warnings.join(' ') : undefined
 }
 
-// Factory (mirrors matches.routes.ts's createMatchesRouter) — needs live `io`
-// access to broadcast the generated schedule, which events.routes.ts's
-// non-factory routes don't currently need.
-export function createScheduleRouter(io: SocketIOServer) {
-  const router = Router()
+export const scheduleRouter = Router()
 
-  router.post(
+  scheduleRouter.post(
     '/:id/generate-schedule',
     requireAuth,
     requireGroupRole(ORGANIZER_OR_ADMIN, groupIdFromEventParam('id')),
@@ -172,15 +167,13 @@ export function createScheduleRouter(io: SocketIOServer) {
       }
 
       res.status(201).json({ data: matches, warning })
-
-      io.to(`event:${eventId}`).emit('schedule:generated', { event_id: eventId, matches })
     }
   )
 
   // Mexicano-only: appends one more wave once every match so far is confirmed.
   // Doesn't go through generateSchedule()'s dispatcher (that's scoped to the 3
   // upfront-batch formats) — calls generateMexicanoNextRound() directly.
-  router.post(
+  scheduleRouter.post(
     '/:id/generate-next-round',
     requireAuth,
     requireGroupRole(ORGANIZER_OR_ADMIN, groupIdFromEventParam('id')),
@@ -297,10 +290,5 @@ export function createScheduleRouter(io: SocketIOServer) {
       const warning = buildScheduleWarning({ benchedPlayerIds: result.benchedPlayerIds })
 
       res.status(201).json({ data: matches, warning })
-
-      io.to(`event:${eventId}`).emit('schedule:generated', { event_id: eventId, matches })
     }
   )
-
-  return router
-}

@@ -437,14 +437,15 @@ Partner (standings-dependent / gender-constrained) remain unimplemented, deliber
    event row (`SELECT ... FOR UPDATE`), re-checks that no `matches` exist, and bulk-inserts — closing the
    same TOCTOU race class already fixed for registration in migration 0002 (two near-simultaneous clicks,
    or two co-organizer tabs, can't both pass the "no schedule yet" check and both insert).
-5. **Response & broadcast.** `201 { data, warning? }` — `data` is the newly inserted matches with player
-   names embedded (same shape as `GET /api/matches`). `warning` is set when a player was excluded for team
-   formation, or when the computed round count exceeds 12 (a large Round Robin can legitimately need many
-   rounds — courts_count vs. player count is left to the organizer's judgment, not validated). The same
-   payload is broadcast as `schedule:generated` to the `event:{id}` Socket.IO room, so every connected
-   viewer's Pertandingan tab populates live without a reload — **not** compatible with the existing
-   `mergeMatchUpdate()` helper (that's a single-match patch-by-id), so the frontend listener does a full
-   array replace (`setMatches(matches)`) instead.
+5. **Response & real-time propagation.** `201 { data, warning? }` — `data` is the newly inserted matches
+   with player names embedded (same shape as `GET /api/matches`). `warning` is set when a player was
+   excluded for team formation, or when the computed round count exceeds 12 (a large Round Robin can
+   legitimately need many rounds — courts_count vs. player count is left to the organizer's judgment, not
+   validated). The route doesn't push this payload anywhere itself — `matches` is in the
+   `supabase_realtime` publication (`migrations/0011_enable_realtime_for_live_scoring.sql`), so every
+   connected viewer's Matches tab picks up the newly inserted rows via a Supabase Realtime Postgres
+   Changes `INSERT` subscription (§4), debounced and refetched through `GET /api/matches` rather than
+   reconstructed from the raw, un-joined rows Postgres Changes actually delivers.
 6. **Button visibility:** `isOrganizerOrAdmin && matches.length === 0 && status in {Open,Full,In Progress}
    && registeredParticipants.length >= 4` — mirrors the backend preconditions client-side (UX only, backend
    re-validates regardless).
@@ -510,15 +511,16 @@ standings"). So Mexicano ships as a repeatable action instead of a one-shot batc
 6. **No round-count cap.** Unlike Fixed Partner/Americano's `clamp(n-1, 3, 8)`, Mexicano has no limit — it's
    entirely manual (one click = one wave), so the organizer simply stops clicking when the event should
    end. Same "trust the organizer" precedent already established for Round Robin's uncapped round count.
-7. **Response, warning, broadcast**: identical shape and behavior to §3.6 — `201 { data, warning? }`,
-   `warning` set when this wave benched anyone for court capacity, broadcast on the *same*
-   `schedule:generated` Socket.IO event (full match-array replace) rather than a new event type, since the
-   frontend's existing handler already does exactly the right thing for "more matches just appeared."
+7. **Response, warning, real-time propagation**: identical shape and behavior to §3.6 —
+   `201 { data, warning? }`, `warning` set when this wave benched anyone for court capacity, picked up by
+   the *same* `matches` `INSERT` Postgres Changes subscription (§4) as every other format, since the
+   frontend's existing debounced-refetch handler already does exactly the right thing for "more matches
+   just appeared."
 8. **Button visibility:** `isOrganizerOrAdmin && event.format === 'Mexicano' && matches.length > 0 && status
    in {Open,Full,In Progress}` — but **disabled** unless `matches.every(m => m.status === 'confirmed')`,
    with a hint pointing at the override flow.
-9. **Known minor limitation:** the socket payload doesn't carry "who's benched this wave" — a benched
-   player just notices their name missing from the Pertandingan tab that round, same UX as
+9. **Known minor limitation:** the Postgres Changes payload doesn't carry "who's benched this wave" — a
+   benched player just notices their name missing from the Matches tab that round, same UX as
    `excludedPlayerId` in §3.6 (not a blocker, just not surfaced beyond the organizer's own warning text).
 
 ### 3.8 Generate match schedule — Mixed Partner
@@ -583,12 +585,15 @@ update their own row — the feature was anticipated at the schema level and onl
    the earliest `'waiting_list'` row (by `registered_at`) to `'registered'`. Named exceptions, checked in
    order: `EVENT_NOT_FOUND` → `EVENT_NOT_WITHDRAWABLE` → `REGISTRATION_NOT_FOUND` → `ALREADY_WITHDRAWN`
    (mapped to 404/400/404/409 respectively).
-5. **Response & broadcast.** `200 { data: registrations, promoted_user_id, promotion_window_expired,
-   message }` — `data` is the event's full, freshly re-fetched `registrations` array (not just the one
-   changed row), because a withdrawal can shift *everyone else's* waiting-list position, not only the
-   promoted player's status. Broadcast as **`registrations:updated`** to the `event:{id}` Socket.IO room
-   with the same payload shape — the frontend listener does a full-array replace of `event.registrations`,
-   the same "not a merge" reasoning `schedule:generated` already established for `matches`.
+5. **Response & real-time propagation.** `200 { data: registrations, promoted_user_id,
+   promotion_window_expired, message }` — `data` is the event's full, freshly re-fetched `registrations`
+   array (not just the one changed row), because a withdrawal can shift *everyone else's* waiting-list
+   position, not only the promoted player's status. The route doesn't push this anywhere itself —
+   `event_registrations` is also in the `supabase_realtime` publication, so any change to the table (this
+   withdrawal, its auto-promotion, or even a brand new registration) triggers the frontend's
+   `event_registrations` Postgres Changes subscription (§4) to refetch `GET /api/events/:id` and replace
+   `event.registrations` wholesale — the same "not a merge" reasoning `schedule:generated`'s handling
+   already established for `matches`.
 6. **What promotion does and doesn't do to an existing schedule.** `matches` rows have no FK to
    `event_registrations` — nothing in the DB cascades a status change onto already-generated matches.
    For **Mexicano**, this is a non-issue: `generate-next-round` always re-fetches `status='registered'`
@@ -608,32 +613,40 @@ update their own row — the feature was anticipated at the schema level and onl
 ## 4. Live Match
 
 This is the most involved workflow — it combines REST calls, optimistic local state updates, and a
-Socket.IO room for real-time fan-out to other viewers.
+Supabase Realtime (Postgres Changes) subscription for real-time fan-out to other viewers. This layer used
+to be self-hosted Socket.IO; it was migrated to Supabase Realtime so the backend no longer needs a
+persistent-connection host to serve live scoring (see `migrations/0011_enable_realtime_for_live_scoring.sql`).
 
-**Files:** `frontend/src/app/events/[id]/live/page.tsx`, `frontend/src/lib/socket.ts`,
-`backend/src/routes/matches.routes.ts`, `backend/src/sockets/socket.server.ts`
+**Files:** `frontend/src/app/events/[id]/live/page.tsx`, `frontend/src/lib/supabase/client.ts`,
+`backend/src/routes/matches.routes.ts`
 
-### 4.1 Load + join the room
+### 4.1 Load + subscribe
 
 ```mermaid
 sequenceDiagram
     participant F as LivePage
     participant API as Express API
-    participant S as Socket.IO server
+    participant R as Supabase Realtime
 
     F->>API: GET /api/events/:id  (event + registrations)
     F->>API: GET /api/matches?event_id=:id  (all matches, all rounds)
-    F->>S: connect()
-    F->>S: emit "join:event", eventId
-    Note over F,S: socket now receives this event's room broadcasts
+    F->>R: channel("event-{id}").on("postgres_changes", matches UPDATE)
+    F->>R: .on("postgres_changes", matches INSERT)
+    F->>R: .on("postgres_changes", event_registrations *)
+    F->>R: .subscribe()
+    Note over F,R: channel now receives row changes for this event only, filtered server-side by event_id
 ```
 
 `GET /api/matches` (`matches.routes.ts:13-65`) does the same membership check as every other route
 (event → group → `group_members`), then returns matches **with player names already joined in**
 (`team_a_player1:profiles!matches_team_a_player1_fkey(id, full_name)`, etc.) — this nested shape only
 comes from the *list* endpoint. The PATCH endpoints below return the raw `matches` row (player columns
-as plain UUID strings, no nested name) — this distinction matters for how the frontend merges updates
-(see §4.5).
+as plain UUID strings, no nested name), and Postgres Changes `UPDATE` payloads carry the same raw shape —
+this distinction matters for how the frontend merges updates (see §4.5).
+
+RLS already permits this: `"matches: read if group member"` and `"registrations: read if group member"`
+(`schema.sql`) gate what a subscriber actually receives, so no separate authorization layer was needed for
+Realtime — the same policies that protect `SELECT` also gate delivery of Postgres Changes.
 
 Matches are grouped client-side by `round_number` (there's no "current round" concept stored anywhere
 in the schema — every round that has matches is rendered as its own section, oldest first).
@@ -647,23 +660,29 @@ in the schema — every round that has matches is rendered as its own section, o
 3. Backend re-checks the caller is actually one of the four players (403 otherwise — the frontend gate
    is UX only, not the real authorization boundary). Rejects with 409 if the match is already
    `pending_confirmation` (no overwriting a score someone else already submitted while you were typing).
-4. Backend picks **who must confirm**: the first non-null player on the *opposing* team who isn't the
-   submitter. Sets `status: 'pending_confirmation'`, `reported_by`, `needs_confirm_by`.
-5. Backend emits `score:updated` to the `event:{id}` Socket.IO room with the raw updated row.
-6. The submitting client updates its own state immediately from the HTTP response (doesn't wait for the
-   socket echo); every *other* client in the room updates from the `score:updated` event.
+4. Backend picks **which team must confirm**: `needs_confirm_by` is set to the first non-null player on
+   the *opposing* team, but the confirm step (§4.3) authorizes **either** player on that team, not just
+   the one id stored there — `needs_confirm_by` marks the team, not a single designated individual. Sets
+   `status: 'pending_confirmation'`, `reported_by`, `needs_confirm_by`.
+5. The route doesn't broadcast anything itself — the updated row lands in the frontend's `matches`
+   `UPDATE` Postgres Changes subscription (§4.1) for every connected viewer, submitter included.
+6. The submitting client still updates its own state immediately from the HTTP response (no reason to
+   wait for its own change to round-trip back through Realtime); every *other* client updates once the
+   Postgres Changes `UPDATE` event for that row arrives.
 
 ### 4.3 Confirm or dispute
 
-1. The "Konfirmasi / Dispute" button only shows to the one player recorded in `needs_confirm_by`.
+1. The "Konfirmasi / Dispute" button shows to either player on the team `needs_confirm_by` identifies
+   (`canConfirmMatch()` in `live/page.tsx`), not just the one id stored in that column — a doubles
+   teammate of the recorded player can act too.
 2. `PATCH /api/matches/:id/confirm` (`matches.routes.ts:144-207`) with `{ action: 'confirm' | 'dispute' }`.
-   Backend rejects (403) if the caller isn't `needs_confirm_by`, or (409) if the match isn't currently
-   `pending_confirmation`.
-3. **Confirm:** `status: 'confirmed'`, emits `score:confirmed` to the room, then calls
-   `broadcastLeaderboard(io, eventId)` (`socket.server.ts:41-71`), which re-aggregates every confirmed
-   match's points per player and emits `leaderboard:updated` with the full computed leaderboard.
+   Backend rejects (403) if the caller isn't on the team `needs_confirm_by` belongs to, or (409) if the
+   match isn't currently `pending_confirmation`.
+3. **Confirm:** `status: 'confirmed'` — the row update alone is enough. Every viewer's local `matches`
+   state updates via the same `UPDATE` subscription as §4.2, and the leaderboard recomputes itself from
+   that same state (§4.6) with no separate broadcast or endpoint involved.
 4. **Dispute:** the score is wiped (`score_a/score_b/reported_by/needs_confirm_by` all set to `null`),
-   `status: 'disputed'`, emits `score:disputed`. The match reopens for either player to re-submit
+   `status: 'disputed'` — propagates the same way. The match reopens for either player to re-submit
    (§4.2's disputed-state button).
 
 ### 4.4 Organizer score override
@@ -680,10 +699,11 @@ bypasses the self-report/confirm dance entirely:
    there's no status gate, since the whole point is correcting whatever state the match is stuck in.
 2. Sets `score_a`/`score_b` directly, `status: 'confirmed'` immediately (no `pending_confirmation`
    step), `reported_by` = the organizer, `needs_confirm_by: null`.
-3. Broadcasts exactly like a normal confirm — `score:confirmed` to the event room, then
-   `broadcastLeaderboard()` — so every viewer's leaderboard updates the same way it would for a
-   player-confirmed score. The frontend's `mergeMatchUpdate()` (§4.5) handles this response identically
-   to the player-confirm path; there's no separate socket event type for "this was an override."
+3. Propagates exactly like a normal confirm — the `matches` row update flows through the same `UPDATE`
+   subscription (§4.1), so every viewer's leaderboard updates the same way it would for a
+   player-confirmed score. The frontend's `mergeMatchUpdate()` (§4.5) handles this update identically to
+   the player-confirm path; there's no separate signal for "this was an override" — Postgres Changes only
+   ever tells you a row changed, not why.
 4. The frontend reuses the same score-entry modal as self-report, switched via a `scoreModalMode: 'self'
    | 'override'` flag that only changes copy/labels and which endpoint gets called — not a separate
    component.
@@ -694,8 +714,8 @@ bypasses the self-report/confirm dance entirely:
 frontend/src/app/events/[id]/live/page.tsx — mergeMatchUpdate()
 ```
 
-Socket broadcasts (`score:updated`/`confirmed`/`disputed`) and the PATCH endpoints' own HTTP responses
-both carry a **raw `matches` row** — `team_a_player1` etc. are plain UUID strings here, not the
+Postgres Changes `UPDATE` payloads and the PATCH endpoints' own HTTP responses both carry a
+**raw `matches` row** — `team_a_player1` etc. are plain UUID strings here, not the
 `{ id, full_name }` objects the initial `GET /api/matches` list provided. `mergeMatchUpdate()`
 deliberately copies over only the fields that actually changed (`score_a`, `score_b`, `status`,
 `reported_by`, `needs_confirm_by`) and leaves the existing nested player objects alone. A naive
@@ -704,18 +724,20 @@ next time any score changes — this was caught and fixed during the wiring pass
 
 ### 4.6 Leaderboard
 
-The frontend does **not** trust `leaderboard:updated`'s payload as its only source of truth — it
-recomputes the leaderboard client-side via `useMemo` from local `matches` state (status === `confirmed`
-only), mirroring the exact aggregation `broadcastLeaderboard` does server-side (sum of `score_a`/`score_b`
-per player, ranked descending). This means the leaderboard tab shows a correct value immediately on page
-load (from the initial `GET /api/matches` fetch) rather than staying empty until the first socket event
-fires.
+The leaderboard was never pushed by the server as a separate real-time signal — it's computed entirely
+client-side via `useMemo` from local `matches` state (status === `confirmed` only, points summed from
+`score_a`/`score_b` per player, ranked descending). This means the leaderboard tab shows a correct value
+immediately on page load (from the initial `GET /api/matches` fetch), and stays current automatically
+whenever the `matches` `UPDATE` subscription (§4.1) patches a score to `confirmed` — no separate
+leaderboard event, broadcast, or endpoint exists.
 
 ### 4.7 Cleanup
 
-On unmount: `socket.emit('leave:event', eventId)`, remove the three listeners, `socket.disconnect()`.
-`getSocket()` (`frontend/src/lib/socket.ts`) is a module-level singleton, so navigating back to another
-(or the same) live page later just calls `.connect()` again on the same instance.
+On unmount: `supabase.removeChannel(channel)` — this unsubscribes from all three `postgres_changes`
+listeners on the channel and closes its realtime connection in one call. Unlike the old Socket.IO setup,
+`createClient()` (`frontend/src/lib/supabase/client.ts`) returns a **fresh client per call**, not a
+singleton — so each mount of the live page gets its own client and channel rather than sharing one across
+navigations, and the debounce timer (§4.1's `matches` `INSERT` handling) is cleared alongside it.
 
 ---
 
@@ -869,7 +891,7 @@ per-group.
    Not load-bearing: every admin route uses `supabaseAdmin` (service-role) like the rest of the app, so
    this policy would only matter if a future direct-Supabase-client admin path were ever built. Not
    sprawled to `events`/`matches`/`event_registrations`/`profiles` for the same reason.
-9. **No live-viewer "kick"** — suspending a group doesn't push any Socket.IO event to currently-connected
+9. **No live-viewer "kick"** — suspending a group doesn't push any real-time event to currently-connected
    clients. The suspension check blocks every subsequent HTTP mutation immediately, so there's no
    data-integrity gap; a real-time disconnect for someone already looking at a live event page is a
    possible future enhancement, not required for this phase's "minimal, not a full permission system"

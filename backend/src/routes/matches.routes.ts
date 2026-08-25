@@ -9,8 +9,6 @@ import {
 } from '../middlewares/rbac.middleware'
 import { supabaseAdmin } from '../lib/supabase'
 import { z } from 'zod'
-import { Server as SocketIOServer } from 'socket.io'
-import { broadcastLeaderboard } from '../sockets/socket.server'
 
 // ── PATCH /api/matches/:id/score ──────────────────────────────
 export const SubmitScoreSchema = z.object({
@@ -29,9 +27,7 @@ export const OverrideScoreSchema = z.object({
   score_b: z.number().int().min(0),
 })
 
-// Factory: receives the Socket.IO server instance so we can broadcast updates
-export function createMatchesRouter(io: SocketIOServer) {
-  const matchesRouter = Router()
+export const matchesRouter = Router()
 
   // ── GET /api/matches?event_id=... ────────────────────────────
   // List all matches for an event
@@ -110,9 +106,12 @@ export function createMatchesRouter(io: SocketIOServer) {
       return
     }
 
-    // Determine the other player to confirm (pick someone from the opposing team)
-    const needsConfirmBy = [match.team_b_player1, match.team_b_player2]
-      .find((id) => id && id !== userId) ?? match.team_a_player1
+    // Determine the other player to confirm (pick someone from the team opposing the reporter)
+    const reporterIsTeamA = [match.team_a_player1, match.team_a_player2].includes(userId)
+    const opposingTeam = reporterIsTeamA
+      ? [match.team_b_player1, match.team_b_player2]
+      : [match.team_a_player1, match.team_a_player2]
+    const needsConfirmBy = opposingTeam.find((id) => id && id !== userId)!
 
     const { data: updated, error } = await supabaseAdmin
       .from('matches')
@@ -130,9 +129,6 @@ export function createMatchesRouter(io: SocketIOServer) {
       res.status(500).json({ error: error.message })
       return
     }
-
-    // Broadcast score update to all clients in the event room via Socket.IO
-    io.to(`event:${match.event_id}`).emit('score:updated', { match: updated })
 
     res.json({ data: updated })
   })
@@ -165,8 +161,14 @@ export function createMatchesRouter(io: SocketIOServer) {
       return
     }
 
-    if (match.needs_confirm_by !== userId) {
-      res.status(403).json({ error: 'You are not the designated player to confirm this score' })
+    // Either player on the designated team may confirm/dispute — not just the
+    // one specific id stored in needs_confirm_by.
+    const confirmerTeam = [match.team_a_player1, match.team_a_player2].includes(match.needs_confirm_by)
+      ? [match.team_a_player1, match.team_a_player2]
+      : [match.team_b_player1, match.team_b_player2]
+
+    if (!confirmerTeam.includes(userId)) {
+      res.status(403).json({ error: 'You are not on the team designated to confirm this score' })
       return
     }
 
@@ -188,14 +190,6 @@ export function createMatchesRouter(io: SocketIOServer) {
     if (error) {
       res.status(500).json({ error: error.message })
       return
-    }
-
-    // Broadcast confirmation/dispute to event room
-    if (action === 'confirm') {
-      io.to(`event:${match.event_id}`).emit('score:confirmed', { match: updated })
-      await broadcastLeaderboard(io, match.event_id)
-    } else {
-      io.to(`event:${match.event_id}`).emit('score:disputed', { match: updated })
     }
 
     res.json({ data: updated })
@@ -241,12 +235,6 @@ export function createMatchesRouter(io: SocketIOServer) {
         return
       }
 
-      io.to(`event:${match.event_id}`).emit('score:confirmed', { match: updated })
-      await broadcastLeaderboard(io, match.event_id)
-
       res.json({ data: updated })
     }
   )
-
-  return matchesRouter
-}
