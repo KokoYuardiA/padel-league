@@ -40,7 +40,7 @@ export function Logo({ size = 'md', showWordmark = true, showSubtitle = false, c
           </span>
           {showSubtitle && (
             <span className="text-[10px] leading-tight font-medium text-emerald-600/90 dark:text-emerald-400/80 uppercase tracking-widest">
-              Play Together Get Better
+              Where Players Come Together
             </span>
           )}
         </div>
