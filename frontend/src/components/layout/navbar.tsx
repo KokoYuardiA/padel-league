@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
 import { Logo } from '@/components/layout/logo'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -45,7 +46,7 @@ export function Navbar() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-emerald-950/60 bg-emerald-950/40 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-emerald-200/70 dark:border-emerald-950/60 bg-white/70 dark:bg-emerald-950/40 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
         {/* Brand Logo */}
         <Logo size="md" showSubtitle />
@@ -60,11 +61,11 @@ export function Navbar() {
                 href={link.href}
                 className={`flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-xl transition-all ${
                   isActive
-                    ? 'bg-emerald-900/60 text-emerald-400 border border-emerald-700/50 shadow-sm'
-                    : 'text-slate-300 hover:text-emerald-400 hover:bg-emerald-900/30'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/50 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-100/60 dark:hover:bg-emerald-900/30'
                 }`}
               >
-                <link.icon className={`h-4 w-4 ${isActive ? 'text-lime-400' : 'text-emerald-400'}`} />
+                <link.icon className={`h-4 w-4 ${isActive ? 'text-lime-600 dark:text-lime-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
                 {link.name}
               </Link>
             )
@@ -73,24 +74,25 @@ export function Navbar() {
 
         {/* Desktop CTA & Profile */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           {loading ? null : user ? (
             <>
               <Link
                 href="/profile"
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
                   pathname === '/profile'
-                    ? 'bg-emerald-900/60 text-white border-emerald-500'
-                    : 'bg-emerald-950/60 border-emerald-800/60 text-slate-300 hover:text-white hover:border-emerald-700'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-950 dark:text-white border-emerald-500'
+                    : 'bg-white/70 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800/60 text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white hover:border-emerald-300 dark:hover:border-emerald-700'
                 }`}
               >
-                <div className="h-6 w-6 rounded-full bg-emerald-400 text-emerald-950 flex items-center justify-center font-bold text-[11px]">
+                <div className="h-6 w-6 rounded-full bg-emerald-500 dark:bg-emerald-400 text-white dark:text-emerald-950 flex items-center justify-center font-bold text-[11px]">
                   {initials}
                 </div>
                 <span>My Profile</span>
               </Link>
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-900/40 transition-colors"
+                className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 Sign Out
@@ -100,7 +102,7 @@ export function Navbar() {
             <>
               <Link
                 href="/login"
-                className="text-xs font-medium text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-900/40 transition-colors"
+                className="text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
               >
                 Sign In
               </Link>
@@ -116,18 +118,21 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-900/40"
-          aria-label="Toggle Menu"
-        >
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="flex items-center gap-1.5 md:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white hover:bg-emerald-100 dark:hover:bg-emerald-900/40"
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-emerald-950/80 bg-emerald-950/95 backdrop-blur-2xl px-4 pt-2 pb-6 space-y-2">
+        <div className="md:hidden border-b border-emerald-200 dark:border-emerald-950/80 bg-white/95 dark:bg-emerald-950/95 backdrop-blur-2xl px-4 pt-2 pb-6 space-y-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href
             return (
@@ -137,11 +142,11 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 text-base font-medium rounded-xl transition-all ${
                   isActive
-                    ? 'bg-emerald-900/60 text-emerald-400 border border-emerald-700/50'
-                    : 'text-slate-200 hover:text-emerald-400 hover:bg-emerald-900/40'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/50'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
                 }`}
               >
-                <link.icon className="h-5 w-5 text-emerald-400" />
+                <link.icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 {link.name}
               </Link>
             )
@@ -151,18 +156,19 @@ export function Navbar() {
             <Link
               href="/profile"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 text-base font-medium text-slate-200 hover:text-emerald-400 hover:bg-emerald-900/40 rounded-xl"
+              className="flex items-center gap-3 px-3 py-2.5 text-base font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 rounded-xl"
             >
-              <User className="h-5 w-5 text-emerald-400" />
+              <User className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               My Profile
             </Link>
           )}
 
-          <div className="pt-3 border-t border-emerald-900/60 flex flex-col gap-2">
+          <div className="pt-3 border-t border-emerald-200/70 dark:border-emerald-900/60 flex flex-col gap-2">
+            <ThemeToggle variant="row" />
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-1.5 text-center py-2.5 text-sm font-medium text-slate-200 hover:text-white bg-emerald-900/30 rounded-xl"
+                className="w-full flex items-center justify-center gap-1.5 text-center py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/60 dark:bg-emerald-900/30 rounded-xl"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out
@@ -171,7 +177,7 @@ export function Navbar() {
             <Link
               href="/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 text-sm font-medium text-slate-200 hover:text-white bg-emerald-900/30 rounded-xl"
+              className="w-full text-center py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/60 dark:bg-emerald-900/30 rounded-xl"
             >
               Sign In
             </Link>

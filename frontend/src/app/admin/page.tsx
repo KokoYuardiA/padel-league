@@ -72,15 +72,15 @@ export default function AdminPage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-6xl mx-auto px-4 py-16 text-xs text-slate-400">Loading...</p>
+    return <p className="max-w-6xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading...</p>
   }
 
   if (accessDenied) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <ShieldAlert className="h-10 w-10 text-rose-400 mx-auto" />
-        <h1 className="text-lg font-bold text-white">You are not a Platform Admin.</h1>
-        <p className="text-xs text-slate-400">This page can only be accessed by Platform Admins.</p>
+        <ShieldAlert className="h-10 w-10 text-rose-500 dark:text-rose-400 mx-auto" />
+        <h1 className="text-lg font-bold text-emerald-950 dark:text-white">You are not a Platform Admin.</h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400">This page can only be accessed by Platform Admins.</p>
       </div>
     )
   }
@@ -88,24 +88,24 @@ export default function AdminPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div className="space-y-1">
-        <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
-          <ShieldAlert className="h-6 w-6 text-lime-400" />
+        <h1 className="text-2xl font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+          <ShieldAlert className="h-6 w-6 text-lime-600 dark:text-lime-400" />
           Platform Admin
         </h1>
-        <p className="text-xs text-slate-400">View all platform groups &amp; users, and suspend groups if needed.</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">View all platform groups &amp; users, and suspend groups if needed.</p>
       </div>
 
-      {error && <p className="text-xs text-rose-400">{error}</p>}
-      {actionError && <p className="text-xs text-rose-400">{actionError}</p>}
+      {error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
+      {actionError && <p className="text-xs text-rose-500 dark:text-rose-400">{actionError}</p>}
 
       {/* Groups Table */}
       <div className="space-y-3">
-        <h2 className="text-sm font-bold text-white">All Groups ({groups.length})</h2>
-        <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
+        <h2 className="text-sm font-bold text-emerald-950 dark:text-white">All Groups ({groups.length})</h2>
+        <div className="glass-card rounded-3xl border border-emerald-200/70 dark:border-emerald-900/60 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-emerald-200 dark:border-emerald-900/80 bg-white/80 dark:bg-emerald-950/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3.5 px-4">Name</th>
                   <th className="py-3.5 px-4">Visibility</th>
                   <th className="py-3.5 px-4">Members</th>
@@ -113,24 +113,24 @@ export default function AdminPage() {
                   <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-emerald-900/40 text-xs">
+              <tbody className="divide-y divide-emerald-200/60 dark:divide-emerald-900/40 text-xs">
                 {groups.map((g) => (
-                  <tr key={g.id} className="hover:bg-emerald-950/40 text-slate-300">
-                    <td className="py-3.5 px-4 font-bold text-white">{g.name}</td>
+                  <tr key={g.id} className="hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300">
+                    <td className="py-3.5 px-4 font-bold text-emerald-950 dark:text-white">{g.name}</td>
                     <td className="py-3.5 px-4">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-800">
-                        {g.is_public ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3 text-amber-400" />}
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-white dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                        {g.is_public ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400" />}
                         {g.is_public ? 'Public' : 'Private'}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-400">{g.member_count}</td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{g.member_count}</td>
                     <td className="py-3.5 px-4">
                       {g.suspended_at ? (
-                        <span className="text-[10px] font-bold bg-rose-950 text-rose-300 px-2.5 py-1 rounded-full border border-rose-800">
+                        <span className="text-[10px] font-bold bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-300 px-2.5 py-1 rounded-full border border-rose-200 dark:border-rose-800">
                           Suspended
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold bg-emerald-950 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-800">
+                        <span className="text-[10px] font-bold bg-white dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                           Active
                         </span>
                       )}
@@ -141,8 +141,8 @@ export default function AdminPage() {
                         disabled={busyGroupId === g.id}
                         className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg border disabled:opacity-50 ${
                           g.suspended_at
-                            ? 'text-emerald-300 border-emerald-700 hover:bg-emerald-900/40'
-                            : 'text-rose-300 border-rose-800 hover:bg-rose-900/30'
+                            ? 'text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/40'
+                            : 'text-rose-600 dark:text-rose-300 border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/30'
                         }`}
                       >
                         {g.suspended_at ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Ban className="h-3.5 w-3.5" />}
@@ -159,28 +159,28 @@ export default function AdminPage() {
 
       {/* Users Table */}
       <div className="space-y-3">
-        <h2 className="text-sm font-bold text-white flex items-center gap-2">
-          <Users className="h-4 w-4 text-emerald-400" />
+        <h2 className="text-sm font-bold text-emerald-950 dark:text-white flex items-center gap-2">
+          <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           All Users ({users.length})
         </h2>
-        <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
+        <div className="glass-card rounded-3xl border border-emerald-200/70 dark:border-emerald-900/60 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-emerald-200 dark:border-emerald-900/80 bg-white/80 dark:bg-emerald-950/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3.5 px-4">Name</th>
                   <th className="py-3.5 px-4">Email</th>
                   <th className="py-3.5 px-4">Skill Level</th>
                   <th className="py-3.5 px-4">Phone Number</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-emerald-900/40 text-xs">
+              <tbody className="divide-y divide-emerald-200/60 dark:divide-emerald-900/40 text-xs">
                 {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-emerald-950/40 text-slate-300">
-                    <td className="py-3.5 px-4 font-bold text-white">{u.full_name ?? '-'}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{u.email ?? '-'}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{u.skill_level ?? '-'}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{u.phone_number ?? '-'}</td>
+                  <tr key={u.id} className="hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300">
+                    <td className="py-3.5 px-4 font-bold text-emerald-950 dark:text-white">{u.full_name ?? '-'}</td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{u.email ?? '-'}</td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{u.skill_level ?? '-'}</td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{u.phone_number ?? '-'}</td>
                   </tr>
                 ))}
               </tbody>

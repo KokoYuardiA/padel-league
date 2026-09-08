@@ -44,14 +44,14 @@ export default function DiscoverGroupPage() {
   }, [params.id])
 
   if (loading) {
-    return <p className="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-400">Loading group...</p>
+    return <p className="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading group...</p>
   }
 
   if (error || !group) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <p className="text-sm text-slate-400">{error || 'Group not found or is not a public group.'}</p>
-        <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
+        <p className="text-sm text-slate-500 dark:text-slate-400">{error || 'Group not found or is not a public group.'}</p>
+        <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to Explore Groups
         </Link>
       </div>
@@ -60,31 +60,31 @@ export default function DiscoverGroupPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
+      <Link href="/discover" className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
         <ArrowLeft className="h-3.5 w-3.5" /> Back to Explore Groups
       </Link>
 
-      <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-900/60 space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-200/70 dark:border-emerald-900/60 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold text-white">{group.name}</h1>
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-lime-400 bg-emerald-900/50 px-3 py-1 rounded-full border border-emerald-800">
+          <h1 className="text-2xl font-extrabold text-emerald-950 dark:text-white">{group.name}</h1>
+          <span className="flex items-center gap-1.5 text-xs font-semibold text-lime-600 dark:text-lime-400 bg-emerald-100/80 dark:bg-emerald-900/50 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
             <Users className="h-3.5 w-3.5" />
             {group.member_count} Members
           </span>
         </div>
-        <p className="text-sm text-slate-300 leading-relaxed">{group.description || 'No description.'}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{group.description || 'No description.'}</p>
 
-        <div className="pt-4 border-t border-emerald-900/50">
+        <div className="pt-4 border-t border-emerald-200/70 dark:border-emerald-900/50">
           {user ? (
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Not a member of this group yet? Contact the group admin to get an invite code.
             </p>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-xs text-slate-400">Sign in or register to start joining padel communities.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Sign in or register to start joining padel communities.</p>
               <Link
                 href="/login"
-                className="text-xs font-semibold text-slate-200 hover:text-white bg-emerald-900/40 border border-emerald-800 px-3.5 py-1.5 rounded-xl"
+                className="text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1.5 rounded-xl"
               >
                 Sign In
               </Link>
@@ -100,35 +100,35 @@ export default function DiscoverGroupPage() {
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-emerald-400" />
+        <h2 className="text-lg font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           Event
         </h2>
 
         {group.events.length === 0 ? (
-          <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
+          <p className="text-xs text-slate-500 dark:text-slate-400 p-5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/60">
             No public events from this group yet.
           </p>
         ) : (
           <div className="space-y-3">
             {group.events.map((evt) => (
-              <div key={evt.id} className="p-5 rounded-2xl glass-card border border-emerald-900/60 space-y-2">
+              <div key={evt.id} className="p-5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/60 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold bg-white dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
                     {evt.format}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-lg border font-semibold bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
+                  <span className="text-xs px-2 py-0.5 rounded-lg border font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">
                     {evt.status}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-white">{evt.title}</h3>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+                <h3 className="text-base font-bold text-emerald-950 dark:text-white">{evt.title}</h3>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5 text-emerald-400" />
+                    <Clock className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     {evt.event_date} • {evt.start_time}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5 text-emerald-400" />
+                    <MapPin className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     {evt.location}
                   </span>
                 </div>

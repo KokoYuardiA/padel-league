@@ -48,18 +48,18 @@ function LoginForm() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-      <div className="w-full max-w-md space-y-8 glass-card p-8 rounded-3xl border border-emerald-800/40 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-md space-y-8 glass-card p-8 rounded-3xl border border-emerald-200 dark:border-emerald-800/40 shadow-2xl relative overflow-hidden">
         {/* Header */}
         <div className="text-center space-y-2 flex flex-col items-center">
           <Logo size="lg" showWordmark={false} className="mb-2" />
-          <h2 className="text-2xl font-extrabold text-white">Welcome Back</h2>
-          <p className="text-xs text-slate-400">Sign in to your Rally Hub account</p>
+          <h2 className="text-2xl font-extrabold text-emerald-950 dark:text-white">Welcome Back</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Sign in to your Rally Hub account</p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-300">
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300">
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 dark:text-rose-400 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
@@ -67,36 +67,36 @@ function LoginForm() {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Email</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@email.com"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold text-slate-300">Password</label>
-              <Link href="/forgot-password" className="text-[11px] font-medium text-emerald-400 hover:underline">
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300">Password</label>
+              <Link href="/forgot-password" className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:underline">
                 Forgot Password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
@@ -112,9 +112,9 @@ function LoginForm() {
         </form>
 
         {/* Footer Link */}
-        <div className="pt-4 border-t border-emerald-900/40 text-center text-xs text-slate-400">
+        <div className="pt-4 border-t border-emerald-200/70 dark:border-emerald-900/40 text-center text-xs text-slate-500 dark:text-slate-400">
           Do not have an account?{' '}
-          <Link href="/register" className="font-bold text-lime-400 hover:underline">
+          <Link href="/register" className="font-bold text-lime-600 dark:text-lime-400 hover:underline">
             Register as New Player
           </Link>
         </div>

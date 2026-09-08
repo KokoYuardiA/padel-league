@@ -38,9 +38,9 @@ interface MatchHistoryItem {
 }
 
 const RESULT_BADGE: Record<MatchHistoryItem['result'], string> = {
-  win: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
-  loss: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
-  draw: 'bg-slate-500/10 text-slate-300 border-slate-500/30',
+  win: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+  loss: 'bg-rose-500/10 text-rose-600 dark:text-rose-300 border-rose-500/30',
+  draw: 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/30',
 }
 const RESULT_LABEL: Record<MatchHistoryItem['result'], string> = {
   win: 'Win',
@@ -179,37 +179,37 @@ export default function ProfilePage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Loading profile...</p>
+    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading profile...</p>
   }
 
   if (!user) {
-    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-400">Sign in to view your profile.</p>
+    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Sign in to view your profile.</p>
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-extrabold text-white">Player Profile</h1>
-        <p className="text-xs text-slate-400">Manage your personal information and padel skill level.</p>
+        <h1 className="text-2xl font-extrabold text-emerald-950 dark:text-white">Player Profile</h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Manage your personal information and padel skill level.</p>
       </div>
 
       {saved && (
-        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-          <Check className="h-4 w-4 text-lime-400" />
+        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-2">
+          <Check className="h-4 w-4 text-lime-600 dark:text-lime-400" />
           <span>Profile updated successfully!</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2">
-          <AlertCircle className="h-4 w-4 text-rose-400 mt-0.5 shrink-0" />
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs flex items-start gap-2">
+          <AlertCircle className="h-4 w-4 text-rose-500 dark:text-rose-400 mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSave} className="space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-emerald-900/60">
+      <form onSubmit={handleSave} className="space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-emerald-200/70 dark:border-emerald-900/60">
         {/* Avatar Upload */}
-        <div className="flex items-center gap-6 pb-6 border-b border-emerald-900/50">
+        <div className="flex items-center gap-6 pb-6 border-b border-emerald-200/70 dark:border-emerald-900/50">
           <div className="relative">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -227,7 +227,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-0 right-0 p-1.5 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 hover:text-white disabled:opacity-50"
+              className="absolute bottom-0 right-0 p-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900 border border-emerald-500 text-emerald-700 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-white disabled:opacity-50"
             >
               <Camera className="h-3.5 w-3.5" />
             </button>
@@ -240,9 +240,9 @@ export default function ProfilePage() {
             />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white">{fullName}</h3>
-            <p className="text-xs text-slate-400">{uploading ? 'Uploading photo...' : user.email}</p>
-            <span className="inline-block mt-2 text-[10px] font-bold bg-emerald-950 text-lime-400 px-2 py-0.5 rounded-md border border-emerald-800">
+            <h3 className="text-sm font-bold text-emerald-950 dark:text-white">{fullName}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{uploading ? 'Uploading photo...' : user.email}</p>
+            <span className="inline-block mt-2 text-[10px] font-bold bg-white dark:bg-emerald-950 text-lime-600 dark:text-lime-400 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
               {skillLevel} Player
             </span>
           </div>
@@ -251,52 +251,52 @@ export default function ProfilePage() {
         {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Full Name</label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email (Verified)</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Email (Verified)</label>
             <div className="relative opacity-70">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="email"
                 disabled
                 value={user.email ?? ''}
-                className="w-full bg-emerald-950/50 border border-emerald-900 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-400 cursor-not-allowed"
+                className="w-full bg-white/60 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed"
               />
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-            Phone Number <span className="text-emerald-400 font-normal">(Contact information)</span>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
+            Phone Number <span className="text-emerald-600 dark:text-emerald-400 font-normal">(Contact information)</span>
           </label>
           <div className="relative">
-            <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+            <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
             <input
               type="tel"
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400"
+              className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
         </div>
 
         {/* Skill Level Selection */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-2">
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">
             Skill Level (Self-Declared)
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -307,15 +307,15 @@ export default function ProfilePage() {
                 onClick={() => setSkillLevel(opt.level)}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   skillLevel === opt.level
-                    ? 'bg-emerald-900/60 border-emerald-400 text-white shadow-md'
-                    : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400 hover:border-emerald-800'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-400 text-emerald-950 dark:text-white shadow-md'
+                    : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400 hover:border-emerald-200 dark:hover:border-emerald-800'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-white">{opt.level}</span>
-                  {skillLevel === opt.level && <Check className="h-3.5 w-3.5 text-lime-400" />}
+                  <span className="text-xs font-bold text-emerald-950 dark:text-white">{opt.level}</span>
+                  {skillLevel === opt.level && <Check className="h-3.5 w-3.5 text-lime-600 dark:text-lime-400" />}
                 </div>
-                <p className="text-[10px] text-slate-400 leading-tight">{opt.desc}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">{opt.desc}</p>
               </button>
             ))}
           </div>
@@ -323,8 +323,8 @@ export default function ProfilePage() {
 
         {/* Gender Selection — only needed for the Mixed Partner event format */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-2">
-            Gender <span className="text-emerald-400 font-normal">(Required to register for Mixed Partner format events)</span>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">
+            Gender <span className="text-emerald-600 dark:text-emerald-400 font-normal">(Required to register for Mixed Partner format events)</span>
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {genderOptions.map((opt) => (
@@ -334,12 +334,12 @@ export default function ProfilePage() {
                 onClick={() => setGender(opt.value)}
                 className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
                   gender === opt.value
-                    ? 'bg-emerald-900/60 border-emerald-400 text-white shadow-md'
-                    : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400 hover:border-emerald-800'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-400 text-emerald-950 dark:text-white shadow-md'
+                    : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400 hover:border-emerald-200 dark:hover:border-emerald-800'
                 }`}
               >
-                <span className="text-xs font-bold text-white">{opt.label}</span>
-                {gender === opt.value && <Check className="h-3.5 w-3.5 text-lime-400" />}
+                <span className="text-xs font-bold text-emerald-950 dark:text-white">{opt.label}</span>
+                {gender === opt.value && <Check className="h-3.5 w-3.5 text-lime-600 dark:text-lime-400" />}
               </button>
             ))}
           </div>
@@ -360,17 +360,17 @@ export default function ProfilePage() {
       {/* Statistics & Match History */}
       <div className="space-y-4">
         <div className="space-y-1">
-          <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-lime-400" />
+          <h2 className="text-lg font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-lime-600 dark:text-lime-400" />
             Statistics & Match History
           </h2>
-          <p className="text-xs text-slate-400">Summary of all confirmed matches across groups you have joined.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Summary of all confirmed matches across groups you have joined.</p>
         </div>
 
         {statsLoading ? (
-          <p className="text-xs text-slate-400">Loading match history...</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Loading match history...</p>
         ) : statsError ? (
-          <p className="text-xs text-rose-400">{statsError}</p>
+          <p className="text-xs text-rose-500 dark:text-rose-400">{statsError}</p>
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -380,23 +380,23 @@ export default function ProfilePage() {
                 { label: 'Win Rate', value: `${statsSummary?.winRatePercent ?? 0}%` },
                 { label: 'Total Points', value: statsSummary?.totalPoints ?? 0 },
               ].map((stat) => (
-                <div key={stat.label} className="p-3.5 rounded-2xl glass-card border border-emerald-900/50">
-                  <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{stat.label}</p>
-                  <h3 className="text-lg font-extrabold mt-1 text-emerald-400">{stat.value}</h3>
+                <div key={stat.label} className="p-3.5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/50">
+                  <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.label}</p>
+                  <h3 className="text-lg font-extrabold mt-1 text-emerald-600 dark:text-emerald-400">{stat.value}</h3>
                 </div>
               ))}
             </div>
 
             {matchHistory.length === 0 ? (
-              <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
+              <p className="text-xs text-slate-500 dark:text-slate-400 p-5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/60">
                 No match history yet.
               </p>
             ) : (
-              <div className="glass-card rounded-3xl border border-emerald-900/60 overflow-hidden">
+              <div className="glass-card rounded-3xl border border-emerald-200/70 dark:border-emerald-900/60 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-emerald-900/80 bg-emerald-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      <tr className="border-b border-emerald-200 dark:border-emerald-900/80 bg-white/80 dark:bg-emerald-950/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <th className="py-3.5 px-4">Date</th>
                         <th className="py-3.5 px-4">Event / Group</th>
                         <th className="py-3.5 px-4">Format</th>
@@ -405,19 +405,19 @@ export default function ProfilePage() {
                         <th className="py-3.5 px-4 text-right">Result</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-emerald-900/40 text-xs">
+                    <tbody className="divide-y divide-emerald-200/60 dark:divide-emerald-900/40 text-xs">
                       {matchHistory.map((m) => (
-                        <tr key={m.matchId} className="hover:bg-emerald-950/40 text-slate-300">
-                          <td className="py-3.5 px-4 text-slate-400">{m.eventDate}</td>
+                        <tr key={m.matchId} className="hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300">
+                          <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{m.eventDate}</td>
                           <td className="py-3.5 px-4">
-                            <p className="font-bold text-white">{m.eventTitle}</p>
-                            <p className="text-[10px] text-slate-400">{m.groupName}</p>
+                            <p className="font-bold text-emerald-950 dark:text-white">{m.eventTitle}</p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400">{m.groupName}</p>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-400">{m.format}</td>
-                          <td className="py-3.5 px-4 text-slate-400">
+                          <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{m.format}</td>
+                          <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">
                             {m.opponents.map((o) => o.full_name).join(' / ') || '-'}
                           </td>
-                          <td className="py-3.5 px-4 font-bold text-white">
+                          <td className="py-3.5 px-4 font-bold text-emerald-950 dark:text-white">
                             {m.myScore} - {m.opponentScore}
                           </td>
                           <td className="py-3.5 px-4 text-right">

@@ -4,21 +4,15 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Trophy,
   Users,
   Zap,
   CheckCircle2,
-  Calendar,
   Sparkles,
   ArrowRight,
   Shield,
   Activity,
   QrCode,
-  Smartphone,
-  Play,
   RotateCw,
-  CircleDot,
-  Radio,
   Flame,
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
@@ -46,20 +40,20 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 md:pt-24 md:pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
         {/* Status Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md mb-8 animate-fade-in">
-          <Sparkles className="h-3.5 w-3.5 text-lime-400 fill-lime-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-300/60 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md mb-8 animate-fade-in">
+          <Sparkles className="h-3.5 w-3.5 text-lime-600 dark:text-lime-400 fill-lime-600 dark:fill-lime-400" />
           <span>The #1 Modern Padel Event Platform</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-lime-400 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-lime-500 dark:bg-lime-400 animate-pulse" />
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-6 leading-[1.1]">
           Manage Padel Events <br className="hidden sm:inline" />
           <span className="gradient-text">Automated & Real-Time</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="max-w-3xl mx-auto text-base sm:text-xl text-slate-300 font-normal leading-relaxed mb-10">
+        <p className="max-w-3xl mx-auto text-base sm:text-xl text-slate-600 dark:text-slate-300 font-normal leading-relaxed mb-10">
           Create events, automate match schedules & court allocation, run live scoring with automatic player confirmation, and get real-time standings without spreadsheets.
         </p>
 
@@ -74,107 +68,23 @@ export default function Home() {
           </Link>
           <Link
             href="#formats"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-base font-semibold text-slate-200 hover:text-white bg-emerald-900/30 border border-emerald-700/40 hover:bg-emerald-900/50 px-6 py-3.5 rounded-2xl backdrop-blur-md transition-all duration-200"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-base font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/60 dark:bg-emerald-900/30 border border-emerald-300/60 dark:border-emerald-700/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 px-6 py-3.5 rounded-2xl backdrop-blur-md transition-all duration-200"
           >
             View 5 Match Formats
           </Link>
-        </div>
-
-        {/* Hero Interactive Live Scoring Mockup */}
-        <div className="relative mx-auto max-w-5xl rounded-3xl p-3 sm:p-5 bg-emerald-950/60 border border-emerald-700/40 shadow-2xl backdrop-blur-2xl">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-emerald-900/60 bg-emerald-950/80 rounded-2xl mb-4 text-left">
-            <div className="flex items-center gap-3">
-              <span className="flex h-3 w-3 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-              </span>
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  Jakarta Padel Open 2026 — Americano
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    Round 3 / 6
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-400">Court 1 & Court 2 • In Progress</p>
-              </div>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 text-xs text-emerald-400 font-medium bg-emerald-900/40 px-3 py-1.5 rounded-xl border border-emerald-800/40">
-              <Radio className="h-3.5 w-3.5 animate-pulse" />
-              Live WebSocket Sync
-            </div>
-          </div>
-
-          {/* Matches & Courts Preview Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-            {/* Court 1 Card */}
-            <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-800/40 relative overflow-hidden">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800/50">
-                  Court 1
-                </span>
-                <span className="text-xs text-amber-300 font-medium flex items-center gap-1">
-                  <CircleDot className="h-3 w-3 fill-amber-300" /> Wait Confirmation
-                </span>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-800/30">
-                  <span className="text-sm font-semibold text-white">Rizky / Alex</span>
-                  <span className="text-lg font-extrabold text-lime-400">21</span>
-                </div>
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-800/30">
-                  <span className="text-sm font-semibold text-slate-300">Budi / Dani</span>
-                  <span className="text-lg font-extrabold text-slate-400">15</span>
-                </div>
-              </div>
-
-              <div className="mt-3 pt-2 border-t border-emerald-800/30 flex items-center justify-between text-xs text-slate-400">
-                <span>Self-reported by Rizky</span>
-                <span className="text-emerald-400 font-medium">Pending Alex&apos;s Confirm</span>
-              </div>
-            </div>
-
-            {/* Court 2 Card */}
-            <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-800/40 relative overflow-hidden">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800/50">
-                  Court 2
-                </span>
-                <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Confirmed
-                </span>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-800/30">
-                  <span className="text-sm font-semibold text-white">Kevin / Marcus</span>
-                  <span className="text-lg font-extrabold text-lime-400">24</span>
-                </div>
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-800/30">
-                  <span className="text-sm font-semibold text-slate-300">Hendra / Ahsan</span>
-                  <span className="text-lg font-extrabold text-slate-400">18</span>
-                </div>
-              </div>
-
-              <div className="mt-3 pt-2 border-t border-emerald-800/30 flex items-center justify-between text-xs text-slate-400">
-                <span>Score Final</span>
-                <span className="text-lime-400 font-medium">+24 Points to Ranking</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* 5 Match Formats Section */}
       <section id="formats" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center w-full">
         <div className="max-w-3xl mx-auto mb-16">
-          <h2 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">
+          <h2 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-3">
             Scheduling Algorithms
           </h2>
-          <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <p className="text-3xl sm:text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight">
             Supports 5 Padel Match Formats
           </p>
-          <p className="text-slate-400 mt-3 text-sm sm:text-base">
+          <p className="text-slate-500 dark:text-slate-400 mt-3 text-sm sm:text-base">
             Our system automatically generates partner rotations, court allocation, and rounds without consistently repeating the same pairings.
           </p>
         </div>
@@ -218,17 +128,17 @@ export default function Home() {
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                     <item.icon className="h-5 w-5" />
                   </div>
-                  <span className="text-[10px] font-semibold bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-800">
+                  <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                     {item.tag}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.name}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg font-bold text-emerald-950 dark:text-white mb-2">{item.name}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
               </div>
-              <div className="pt-3 border-t border-emerald-900/50 flex items-center text-[11px] font-medium text-emerald-400">
+              <div className="pt-3 border-t border-emerald-200/70 dark:border-emerald-900/50 flex items-center text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                 <span>Auto-Scheduler Ready</span>
               </div>
             </div>
@@ -239,13 +149,13 @@ export default function Home() {
       {/* Key Features Section */}
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
         <div className="space-y-6 text-center">
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
             Designed Specifically for the Padel Community
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-emerald-950 dark:text-white leading-tight">
             Complete Features from Registration to Final Standings
           </h2>
-          <p className="text-slate-300 text-sm leading-relaxed max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-2xl mx-auto">
             The Rally Hub platform replaces manual organizer tasks with end-to-end automation. From player registration to determining the champion.
           </p>
         </div>
@@ -273,13 +183,13 @@ export default function Home() {
               icon: QrCode,
             },
           ].map((feature, i) => (
-            <div key={i} className="flex gap-4 p-4 rounded-2xl bg-emerald-950/40 border border-emerald-900/50">
-              <div className="h-10 w-10 shrink-0 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div key={i} className="flex gap-4 p-4 rounded-2xl bg-white/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-900/50">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                 <feature.icon className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">{feature.title}</h4>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">{feature.desc}</p>
+                <h4 className="text-sm font-bold text-emerald-950 dark:text-white">{feature.title}</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{feature.desc}</p>
               </div>
             </div>
           ))}
@@ -288,12 +198,12 @@ export default function Home() {
 
       {/* CTA Bottom Banner */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full text-center">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-900/80 via-emerald-950 to-slate-950 border border-emerald-700/50 shadow-2xl relative overflow-hidden">
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 dark:bg-gradient-to-r dark:from-emerald-900/80 dark:via-emerald-950 dark:to-slate-950 border border-emerald-400/40 dark:border-emerald-700/50 shadow-2xl relative overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               Ready to Run Your First Padel Event?
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-emerald-50 dark:text-slate-300 text-sm leading-relaxed">
               Join now as a player or create your club group for free in just a few minutes.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -305,7 +215,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/login"
-                className="w-full sm:w-auto text-sm font-semibold text-slate-200 hover:text-white bg-emerald-900/40 border border-emerald-800 px-6 py-3.5 rounded-xl"
+                className="w-full sm:w-auto text-sm font-semibold text-white hover:bg-white/25 bg-white/15 border border-white/30 dark:text-slate-200 dark:hover:text-white dark:bg-emerald-900/40 dark:border-emerald-800 px-6 py-3.5 rounded-xl"
               >
                 Already Have an Account? Sign In
               </Link>

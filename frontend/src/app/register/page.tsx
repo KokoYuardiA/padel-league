@@ -64,28 +64,28 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-      <div className="w-full max-w-lg space-y-8 glass-card p-8 rounded-3xl border border-emerald-800/40 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-lg space-y-8 glass-card p-8 rounded-3xl border border-emerald-200 dark:border-emerald-800/40 shadow-2xl relative overflow-hidden">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-lime-400 shadow-lg shadow-emerald-500/20 mb-2">
             <Trophy className="h-6 w-6 text-emerald-950 stroke-[2.5]" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white">Register Player Account</h2>
-          <p className="text-xs text-slate-400">Join the padel community & take part in events</p>
+          <h2 className="text-2xl font-extrabold text-emerald-950 dark:text-white">Register Player Account</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Join the padel community & take part in events</p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-300">
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300">
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 dark:text-rose-400 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Check-email Success Alert */}
         {checkEmail && (
-          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
-            <Check className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-700 dark:text-emerald-300">
+            <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
             <span>
               Account created successfully! Check the email <strong>{email}</strong> for confirmation before signing in.
             </span>
@@ -96,70 +96,70 @@ export default function RegisterPage() {
         {!checkEmail && (
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Full Name</label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Your full name"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Email</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@email.com"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Phone Number <span className="text-emerald-400 font-normal">(Required)</span>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
+              Phone Number <span className="text-emerald-600 dark:text-emerald-400 font-normal">(Required)</span>
             </label>
             <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+6281234567890"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 6 characters"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
               />
             </div>
           </div>
 
           {/* Skill Level Selection */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">
               Select Your Skill Level (Self-Declared)
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -170,15 +170,15 @@ export default function RegisterPage() {
                   onClick={() => setSkillLevel(opt.level)}
                   className={`p-3 rounded-xl border text-left transition-all ${
                     skillLevel === opt.level
-                      ? 'bg-emerald-900/60 border-emerald-400 text-white shadow-md'
-                      : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400 hover:border-emerald-800'
+                      ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-400 text-emerald-950 dark:text-white shadow-md'
+                      : 'bg-white/60 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400 hover:border-emerald-300 dark:hover:border-emerald-800'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{opt.level}</span>
-                    {skillLevel === opt.level && <Check className="h-3.5 w-3.5 text-lime-400" />}
+                    <span className="text-xs font-bold text-emerald-950 dark:text-white">{opt.level}</span>
+                    {skillLevel === opt.level && <Check className="h-3.5 w-3.5 text-lime-600 dark:text-lime-400" />}
                   </div>
-                  <p className="text-[10px] text-slate-400 leading-tight">{opt.desc}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">{opt.desc}</p>
                 </button>
               ))}
             </div>
@@ -196,9 +196,9 @@ export default function RegisterPage() {
         )}
 
         {/* Footer Link */}
-        <div className="pt-4 border-t border-emerald-900/40 text-center text-xs text-slate-400">
+        <div className="pt-4 border-t border-emerald-200/70 dark:border-emerald-900/40 text-center text-xs text-slate-500 dark:text-slate-400">
           Already have an account?{' '}
-          <Link href="/login" className="font-bold text-lime-400 hover:underline">
+          <Link href="/login" className="font-bold text-lime-600 dark:text-lime-400 hover:underline">
             Sign In to Your Account
           </Link>
         </div>

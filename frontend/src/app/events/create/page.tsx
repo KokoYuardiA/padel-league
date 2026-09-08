@@ -108,17 +108,17 @@ function CreateEventForm() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
-          <Calendar className="h-6 w-6 text-emerald-400" />
+        <h1 className="text-2xl font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+          <Calendar className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
           Create New Padel Event
         </h1>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Configure match details, player quota, and the automatic schedule generation algorithm.
         </p>
       </div>
 
       {!groupsLoading && eligibleGroups.length === 0 && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start gap-3">
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-xs flex items-start gap-3">
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <span>
             You need to be an Organizer or Group Admin in a group to create an event. Create a new group
@@ -127,16 +127,16 @@ function CreateEventForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-emerald-900/60">
+      <form onSubmit={handleSubmit} className="space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-emerald-200/70 dark:border-emerald-900/60">
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-300">
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300">
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 dark:text-rose-400 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Event Name</label>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Event Name</label>
           <input
             type="text"
             required
@@ -144,18 +144,18 @@ function CreateEventForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Example: Jakarta Padel Open — Round 4"
-            className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+            className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Select Organizing Group</label>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Select Organizing Group</label>
           <select
             required
             value={groupId}
             onChange={(e) => setGroupId(e.target.value)}
             disabled={eligibleGroups.length === 0}
-            className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400 disabled:opacity-50"
+            className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400 disabled:opacity-50"
           >
             {eligibleGroups.length === 0 && <option value="">No groups available</option>}
             {eligibleGroups.map((g) => (
@@ -168,7 +168,7 @@ function CreateEventForm() {
 
         {/* 5 Match Formats Selection */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-2">
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">
             Select Match Format (Auto-Scheduler Engine)
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -179,18 +179,18 @@ function CreateEventForm() {
                 onClick={() => setFormat(f.name)}
                 className={`p-4 rounded-2xl border text-left transition-all ${
                   format === f.name
-                    ? 'bg-emerald-900/70 border-emerald-400 text-white shadow-md'
-                    : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400 hover:border-emerald-800'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/70 border-emerald-400 text-emerald-950 dark:text-white shadow-md'
+                    : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400 hover:border-emerald-200 dark:hover:border-emerald-800'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <f.icon className="h-4 w-4 text-emerald-400" />
+                  <span className="text-xs font-bold text-emerald-950 dark:text-white flex items-center gap-1.5">
+                    <f.icon className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                     {f.name}
                   </span>
-                  {format === f.name && <Check className="h-4 w-4 text-lime-400" />}
+                  {format === f.name && <Check className="h-4 w-4 text-lime-600 dark:text-lime-400" />}
                 </div>
-                <p className="text-[11px] text-slate-400 leading-normal">{f.desc}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">{f.desc}</p>
               </button>
             ))}
           </div>
@@ -199,45 +199,45 @@ function CreateEventForm() {
         {/* Event Details: Date, Location, Courts */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Date</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Date</label>
             <input
               type="date"
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+              className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Start Time</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Start Time</label>
             <input
               type="time"
               required
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+              className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Number of Courts</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Number of Courts</label>
             <input
               type="number"
               min={1}
               max={20}
               value={courtsCount}
               onChange={(e) => setCourtsCount(parseInt(e.target.value) || 1)}
-              className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+              className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Court Location</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Court Location</label>
             <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400/70" />
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600/70 dark:text-emerald-400/70" />
               <input
                 type="text"
                 required
@@ -245,20 +245,20 @@ function CreateEventForm() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Padel Pro Kemang"
-                className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-emerald-950 dark:text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Maximum Players (Quota)</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Maximum Players (Quota)</label>
             <input
               type="number"
               min={4}
               max={64}
               value={maxPlayers}
               onChange={(e) => setMaxPlayers(parseInt(e.target.value) || 4)}
-              className="w-full bg-emerald-950/70 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400"
+              className="w-full bg-white dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
         </div>

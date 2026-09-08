@@ -25,7 +25,7 @@ export function Logo({ size = 'md', showWordmark = true, showSubtitle = false, c
     <Link href="/" className={`flex items-center gap-2.5 group ${className}`}>
       <div className={`relative ${ICON_BOX_SIZE[size]} shrink-0 group-hover:scale-105 transition-transform duration-200`}>
         <Image
-          src="/brand/icon.svg"
+          src="/brand/icon.png"
           alt="Rally Hub"
           fill
           sizes={`${ICON_PX[size]}px`}
@@ -35,12 +35,12 @@ export function Logo({ size = 'md', showWordmark = true, showSubtitle = false, c
       </div>
       {showWordmark && (
         <div className="flex flex-col">
-          <span className="font-bold text-lg leading-none tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-            Rally<span className="text-[#C6E70A]">Hub</span>
+          <span className="font-bold text-lg leading-none tracking-tight text-emerald-950 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+            Rally<span className="text-lime-600 dark:text-[#FFCC00]">Hub</span>
           </span>
           {showSubtitle && (
-            <span className="text-[10px] leading-tight font-medium text-emerald-400/80 uppercase tracking-widest">
-              Play. Connect. Compete.
+            <span className="text-[10px] leading-tight font-medium text-emerald-600/90 dark:text-emerald-400/80 uppercase tracking-widest">
+              Play Together Get Better
             </span>
           )}
         </div>

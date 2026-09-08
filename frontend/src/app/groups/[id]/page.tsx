@@ -172,32 +172,32 @@ export default function GroupDetailPage() {
   }
 
   if (loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-400">Loading group...</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading group...</p>
   }
 
   if (error || !group) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-400">{error || 'Group not found.'}</p>
+    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-rose-500 dark:text-rose-400">{error || 'Group not found.'}</p>
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Group Header Card */}
-      <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-800/50 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-900/50 pb-6">
+      <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-200 dark:border-emerald-800/50 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-200/70 dark:border-emerald-900/50 pb-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-[10px] font-bold bg-emerald-950 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-800">
-                {group.is_public ? <Globe className="h-3 w-3 text-emerald-400" /> : <Lock className="h-3 w-3 text-amber-400" />}
+              <span className="flex items-center gap-1.5 text-[10px] font-bold bg-white dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+                {group.is_public ? <Globe className="h-3 w-3 text-emerald-600 dark:text-emerald-400" /> : <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400" />}
                 {group.is_public ? 'Public Group' : 'Private Group'}
               </span>
               {myMembership && (
-                <span className="text-[10px] font-bold text-lime-400 bg-emerald-900/60 px-2.5 py-1 rounded-full border border-emerald-800">
+                <span className="text-[10px] font-bold text-lime-600 dark:text-lime-400 bg-emerald-100 dark:bg-emerald-900/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                   Your Role: {myMembership.role}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">{group.name}</h1>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">{group.description}</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950 dark:text-white">{group.name}</h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">{group.description}</p>
           </div>
 
           {/* Action Buttons */}
@@ -205,17 +205,17 @@ export default function GroupDetailPage() {
             {isGroupAdmin && (
               <button
                 onClick={handleOpenEditModal}
-                className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-200 bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
+                className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-emerald-100/80 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/70 border border-emerald-300/70 dark:border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
               >
-                <Settings className="h-4 w-4 text-lime-400" />
+                <Settings className="h-4 w-4 text-lime-600 dark:text-lime-400" />
                 Edit Group
               </button>
             )}
             <button
               onClick={() => setShowQRModal(true)}
-              className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-200 bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
+              className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-emerald-100/80 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/70 border border-emerald-300/70 dark:border-emerald-700/50 px-4 py-2.5 rounded-xl transition-all"
             >
-              <QrCode className="h-4 w-4 text-lime-400" />
+              <QrCode className="h-4 w-4 text-lime-600 dark:text-lime-400" />
               Invite QR Code
             </button>
             {canCreateEvent && (
@@ -231,11 +231,11 @@ export default function GroupDetailPage() {
         </div>
 
         {/* Invite Link Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-emerald-950/80 border border-emerald-800/40">
-          <div className="flex items-center gap-2 text-xs text-slate-300 overflow-hidden">
-            <Share2 className="h-4 w-4 text-emerald-400 shrink-0" />
-            <span className="font-semibold text-white shrink-0">Invite Link:</span>
-            <span className="truncate text-slate-400 select-all font-mono text-[11px]">{inviteUrl}</span>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-white/80 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800/40">
+          <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 overflow-hidden">
+            <Share2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span className="font-semibold text-emerald-950 dark:text-white shrink-0">Invite Link:</span>
+            <span className="truncate text-slate-500 dark:text-slate-400 select-all font-mono text-[11px]">{inviteUrl}</span>
           </div>
 
           <button
@@ -253,12 +253,12 @@ export default function GroupDetailPage() {
         {/* Left Column: Group Events */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-emerald-400" />
+            <h2 className="text-lg font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               Group Events
             </h2>
             {canCreateEvent && (
-              <Link href="/events/create" className="text-xs font-semibold text-emerald-400 hover:underline">
+              <Link href="/events/create" className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
                 + New Event
               </Link>
             )}
@@ -266,24 +266,24 @@ export default function GroupDetailPage() {
 
           <div className="space-y-3">
             {events.length === 0 && (
-              <p className="text-xs text-slate-400 p-5 rounded-2xl glass-card border border-emerald-900/60">
+              <p className="text-xs text-slate-500 dark:text-slate-400 p-5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/60">
                 No events in this group yet.
               </p>
             )}
             {events.map((evt) => (
               <div
                 key={evt.id}
-                className="p-5 rounded-2xl glass-card border border-emerald-900/60 flex items-center justify-between"
+                className="p-5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/60 flex items-center justify-between"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">
+                    <span className="text-[10px] font-bold bg-white dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
                       {evt.format}
                     </span>
-                    <span className="text-xs text-slate-400">{evt.event_date}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{evt.event_date}</span>
                   </div>
-                  <h3 className="text-base font-bold text-white">{evt.title}</h3>
-                  <p className="text-xs text-emerald-400">Quota: {evt.max_players} players • {evt.status}</p>
+                  <h3 className="text-base font-bold text-emerald-950 dark:text-white">{evt.title}</h3>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400">Quota: {evt.max_players} players • {evt.status}</p>
                 </div>
 
                 <Link
@@ -301,14 +301,14 @@ export default function GroupDetailPage() {
         {/* Right Column: Members List */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-              <UserCheck className="h-5 w-5 text-emerald-400" />
+            <h2 className="text-lg font-extrabold text-emerald-950 dark:text-white flex items-center gap-2">
+              <UserCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               Members ({group.group_members.length})
             </h2>
           </div>
 
           {memberActionError && (
-            <p className="text-[11px] text-rose-400 flex items-center gap-1.5">
+            <p className="text-[11px] text-rose-500 dark:text-rose-400 flex items-center gap-1.5">
               <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {memberActionError}
             </p>
           )}
@@ -322,18 +322,18 @@ export default function GroupDetailPage() {
               return (
                 <div
                   key={m.user_id}
-                  className="p-3.5 rounded-2xl glass-card border border-emerald-900/50 flex items-center justify-between text-xs gap-2"
+                  className="p-3.5 rounded-2xl glass-card border border-emerald-200/70 dark:border-emerald-900/50 flex items-center justify-between text-xs gap-2"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded-full bg-emerald-900/80 border border-emerald-700 flex items-center justify-center font-bold text-emerald-300 text-xs shrink-0">
+                    <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/80 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center font-bold text-emerald-700 dark:text-emerald-300 text-xs shrink-0">
                       {m.profiles.full_name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-bold text-white truncate flex items-center gap-1">
+                      <h4 className="font-bold text-emerald-950 dark:text-white truncate flex items-center gap-1">
                         {m.profiles.full_name}
-                        {isOwner && <Crown className="h-3 w-3 text-lime-400 shrink-0" />}
+                        {isOwner && <Crown className="h-3 w-3 text-lime-600 dark:text-lime-400 shrink-0" />}
                       </h4>
-                      <span className="text-[10px] text-slate-400">{m.profiles.skill_level}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">{m.profiles.skill_level}</span>
                     </div>
                   </div>
 
@@ -341,10 +341,10 @@ export default function GroupDetailPage() {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                         m.role.includes('Admin')
-                          ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
                           : m.role.includes('Organizer')
-                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
-                          : 'bg-slate-800 text-slate-400 border-slate-700'
+                          ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/30'
+                          : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700'
                       }`}
                     >
                       {m.role}
@@ -359,7 +359,7 @@ export default function GroupDetailPage() {
                             handleChangeMemberRole(m.user_id, m.role === 'Organizer' ? 'Player' : 'Organizer')
                           }
                           title={m.role === 'Organizer' ? 'Make Player' : 'Make Organizer'}
-                          className="p-1.5 rounded-lg bg-emerald-900/50 hover:bg-emerald-900/80 border border-emerald-800 text-slate-300 hover:text-white disabled:opacity-40"
+                          className="p-1.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 border border-emerald-200 dark:border-emerald-800 text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white disabled:opacity-40"
                         >
                           <ArrowUpDown className="h-3 w-3" />
                         </button>
@@ -368,7 +368,7 @@ export default function GroupDetailPage() {
                           disabled={updatingMemberId === m.user_id}
                           onClick={() => handleRemoveMember(m.user_id, m.profiles.full_name)}
                           title="Remove from group"
-                          className="p-1.5 rounded-lg bg-rose-900/30 hover:bg-rose-900/60 border border-rose-800 text-rose-300 hover:text-white disabled:opacity-40"
+                          className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/30 hover:bg-rose-200 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-300 hover:text-rose-800 dark:hover:text-white disabled:opacity-40"
                         >
                           <UserX className="h-3 w-3" />
                         </button>
@@ -385,21 +385,21 @@ export default function GroupDetailPage() {
       {/* QR Code Invite Modal */}
       {showQRModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-emerald-950 border border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center space-y-6 relative shadow-2xl">
-            <h3 className="text-lg font-bold text-white">Group Invite QR Code</h3>
+          <div className="bg-white dark:bg-emerald-950 border border-emerald-300/70 dark:border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center space-y-6 relative shadow-2xl">
+            <h3 className="text-lg font-bold text-emerald-950 dark:text-white">Group Invite QR Code</h3>
 
             <div className="p-4 bg-white rounded-2xl inline-block mx-auto shadow-inner">
-              <QRCodeSVG value={inviteUrl} size={176} bgColor="#ffffff" fgColor="#064e3b" />
+              <QRCodeSVG value={inviteUrl} size={176} bgColor="#ffffff" fgColor="#04211a" />
             </div>
 
-            <p className="text-xs text-slate-300">
-              Invite code: <strong className="text-white font-mono">{group.invite_code}</strong>. Share this
-              link or code so players can join <strong className="text-white">{group.name}</strong>.
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Invite code: <strong className="text-emerald-950 dark:text-white font-mono">{group.invite_code}</strong>. Share this
+              link or code so players can join <strong className="text-emerald-950 dark:text-white">{group.name}</strong>.
             </p>
 
             <button
               onClick={() => setShowQRModal(false)}
-              className="w-full py-2.5 text-xs font-bold text-slate-200 bg-emerald-900/60 hover:bg-emerald-900 border border-emerald-800 rounded-xl"
+              className="w-full py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-emerald-100 dark:bg-emerald-900/60 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-200 dark:border-emerald-800 rounded-xl"
             >
               Close
             </button>
@@ -412,35 +412,35 @@ export default function GroupDetailPage() {
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <form
             onSubmit={handleSaveSettings}
-            className="bg-emerald-950 border border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-md w-full space-y-5 relative shadow-2xl"
+            className="bg-white dark:bg-emerald-950 border border-emerald-300/70 dark:border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-md w-full space-y-5 relative shadow-2xl"
           >
-            <h3 className="text-lg font-bold text-white">Edit Group Settings</h3>
+            <h3 className="text-lg font-bold text-emerald-950 dark:text-white">Edit Group Settings</h3>
 
             {settingsError && (
-              <p className="text-xs text-rose-400 flex items-center gap-1.5">
+              <p className="text-xs text-rose-500 dark:text-rose-400 flex items-center gap-1.5">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {settingsError}
               </p>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Group Name</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Group Name</label>
               <input
                 type="text"
                 required
                 minLength={3}
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="w-full bg-emerald-900/40 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400"
+                className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Description</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Description</label>
               <textarea
                 rows={3}
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                className="w-full bg-emerald-900/40 border border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400"
+                className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
               />
             </div>
 
@@ -449,7 +449,7 @@ export default function GroupDetailPage() {
                 type="button"
                 onClick={() => setEditIsPublic(true)}
                 className={`p-3 rounded-xl border text-left transition-all ${
-                  editIsPublic ? 'bg-emerald-900/70 border-emerald-400 text-white' : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400'
+                  editIsPublic ? 'bg-emerald-100 dark:bg-emerald-900/70 border-emerald-400 text-emerald-950 dark:text-white' : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400'
                 }`}
               >
                 <span className="text-xs font-bold flex items-center gap-1.5">
@@ -460,7 +460,7 @@ export default function GroupDetailPage() {
                 type="button"
                 onClick={() => setEditIsPublic(false)}
                 className={`p-3 rounded-xl border text-left transition-all ${
-                  !editIsPublic ? 'bg-emerald-900/70 border-emerald-400 text-white' : 'bg-emerald-950/40 border-emerald-900/60 text-slate-400'
+                  !editIsPublic ? 'bg-emerald-100 dark:bg-emerald-900/70 border-emerald-400 text-emerald-950 dark:text-white' : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/60 text-slate-500 dark:text-slate-400'
                 }`}
               >
                 <span className="text-xs font-bold flex items-center gap-1.5">
@@ -473,7 +473,7 @@ export default function GroupDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowEditModal(false)}
-                className="w-1/2 py-2.5 text-xs font-semibold text-slate-300 bg-emerald-900/40 border border-emerald-800 rounded-xl"
+                className="w-1/2 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-xl"
               >
                 Cancel
               </button>

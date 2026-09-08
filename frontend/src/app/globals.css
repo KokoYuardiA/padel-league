@@ -48,26 +48,145 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Brand palette — client request
+ *   Hijau (green)            #009B4D
+ *   Kuning tangerine (yellow) #FFCC00
+ *   Putih gading (ivory)      #FAF5E9
+ *
+ * The app is built on a dark theme with hard-coded `emerald` / `lime` / `amber`
+ * utility classes across ~20 files. Rather than touch every component, we remap
+ * Tailwind's built-in color scales to the brand palette here:
+ *   emerald + green  -> brand green
+ *   lime + amber + yellow -> brand yellow
+ *   white            -> ivory
+ *   slate            -> warm green-tinted neutrals (keeps text/gradients on tone)
+ * `rose` / `blue` are left alone: they carry status meaning (disputed / scheduled).
+ */
+@theme {
+  --color-emerald-50: #ecf9f2;
+  --color-emerald-100: #c9efda;
+  --color-emerald-200: #97ddb8;
+  --color-emerald-300: #5dc994;
+  --color-emerald-400: #2bb672;
+  --color-emerald-500: #12a65d;
+  --color-emerald-600: #009b4d;
+  --color-emerald-700: #048141;
+  --color-emerald-800: #076735;
+  --color-emerald-900: #0a4e2b;
+  --color-emerald-950: #052a19;
+
+  --color-green-50: #ecf9f2;
+  --color-green-100: #c9efda;
+  --color-green-200: #97ddb8;
+  --color-green-300: #5dc994;
+  --color-green-400: #2bb672;
+  --color-green-500: #12a65d;
+  --color-green-600: #009b4d;
+  --color-green-700: #048141;
+  --color-green-800: #076735;
+  --color-green-900: #0a4e2b;
+  --color-green-950: #052a19;
+
+  --color-lime-50: #fffae5;
+  --color-lime-100: #fff2b8;
+  --color-lime-200: #ffe888;
+  --color-lime-300: #ffda47;
+  --color-lime-400: #ffcc00;
+  --color-lime-500: #e6b800;
+  --color-lime-600: #b88f00;
+  --color-lime-700: #8a6b00;
+  --color-lime-800: #5c4700;
+  --color-lime-900: #3d2f00;
+  --color-lime-950: #241c00;
+
+  --color-yellow-50: #fffae5;
+  --color-yellow-100: #fff2b8;
+  --color-yellow-200: #ffe888;
+  --color-yellow-300: #ffda47;
+  --color-yellow-400: #ffcc00;
+  --color-yellow-500: #e6b800;
+  --color-yellow-600: #b88f00;
+  --color-yellow-700: #8a6b00;
+  --color-yellow-800: #5c4700;
+  --color-yellow-900: #3d2f00;
+  --color-yellow-950: #241c00;
+
+  --color-amber-50: #fffae5;
+  --color-amber-100: #fff2b8;
+  --color-amber-200: #ffe888;
+  --color-amber-300: #ffda47;
+  --color-amber-400: #ffcc00;
+  --color-amber-500: #e6b800;
+  --color-amber-600: #b88f00;
+  --color-amber-700: #8a6b00;
+  --color-amber-800: #5c4700;
+  --color-amber-900: #3d2f00;
+  --color-amber-950: #241c00;
+
+  --color-white: #faf5e9;
+
+  --color-slate-50: #f6f9f7;
+  --color-slate-100: #edf2ee;
+  --color-slate-200: #dee7e1;
+  --color-slate-300: #c9d6ce;
+  --color-slate-400: #93a79c;
+  --color-slate-500: #6e8478;
+  --color-slate-600: #52655b;
+  --color-slate-700: #3b4b42;
+  --color-slate-800: #26332c;
+  --color-slate-900: #12211b;
+  --color-slate-950: #081410;
+}
+
+/*
+ * Semantic tokens. Light is the default (`:root`); `.dark` overrides.
+ * The pre-hydration script in `layout.tsx` always puts exactly one of
+ * `light` / `dark` on <html>, so the `.light` / `.dark` selectors below
+ * are the source of truth for theme-scoped rules.
+ */
 :root {
-  --background: oklch(0.08 0.02 160);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.12 0.025 160 / 0.7);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.12 0.025 160);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.75 0.22 145);
-  --primary-foreground: oklch(0.1 0.03 160);
-  --secondary: oklch(0.2 0.04 160);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.18 0.03 160);
-  --muted-foreground: oklch(0.65 0.02 160);
-  --accent: oklch(0.82 0.25 130);
-  --accent-foreground: oklch(0.1 0.03 160);
+  color-scheme: light;
+  --background: #faf5e9;
+  --foreground: #0a3d29;
+  --card: rgba(255, 255, 255, 0.78);
+  --card-foreground: #0a3d29;
+  --popover: #ffffff;
+  --popover-foreground: #0a3d29;
+  --primary: #009b4d;
+  --primary-foreground: #ffffff;
+  --secondary: #e7f4ec;
+  --secondary-foreground: #0a3d29;
+  --muted: #eef4f0;
+  --muted-foreground: #52655b;
+  --accent: #ffcc00;
+  --accent-foreground: #04211a;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0.03 160 / 0.6);
-  --input: oklch(0.2 0.03 160);
-  --ring: oklch(0.75 0.22 145);
+  --border: rgba(0, 155, 77, 0.18);
+  --input: #ffffff;
+  --ring: #009b4d;
   --radius: 0.75rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #04211a;
+  --foreground: #faf5e9;
+  --card: rgba(9, 42, 30, 0.7);
+  --card-foreground: #faf5e9;
+  --popover: #082a1e;
+  --popover-foreground: #faf5e9;
+  --primary: #009b4d;
+  --primary-foreground: #04211a;
+  --secondary: #0c3d2a;
+  --secondary-foreground: #faf5e9;
+  --muted: #0f3a2a;
+  --muted-foreground: #9db8aa;
+  --accent: #ffcc00;
+  --accent-foreground: #04211a;
+  --border: rgba(0, 155, 77, 0.22);
+  --input: #103a2a;
+  --ring: #009b4d;
 }
 
 @layer base {
@@ -75,23 +194,47 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground selection:bg-emerald-500/30 selection:text-emerald-300;
-    background-image: 
-      radial-gradient(at 20% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, rgba(132, 204, 22, 0.08) 0px, transparent 50%),
-      radial-gradient(at 40% 100%, rgba(5, 150, 105, 0.1) 0px, transparent 50%);
+    @apply bg-background text-foreground;
     background-attachment: fixed;
+  }
+  .light body {
+    background-image:
+      radial-gradient(at 20% 0%, rgba(0, 155, 77, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(255, 204, 0, 0.12) 0px, transparent 50%),
+      radial-gradient(at 40% 100%, rgba(0, 155, 77, 0.05) 0px, transparent 50%);
+  }
+  .dark body {
+    @apply selection:bg-emerald-500/30 selection:text-emerald-200;
+    background-image:
+      radial-gradient(at 20% 0%, rgba(0, 155, 77, 0.14) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(255, 204, 0, 0.08) 0px, transparent 50%),
+      radial-gradient(at 40% 100%, rgba(0, 155, 77, 0.10) 0px, transparent 50%);
   }
   html {
     @apply font-sans scroll-smooth;
   }
+  /* Tailwind v4 preflight no longer sets this; restore the pointer affordance
+     for interactive controls that aren't disabled. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
 }
 
 .glass-card {
-  background: rgba(18, 28, 24, 0.65);
+  background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 155, 77, 0.12);
+  box-shadow: 0 10px 34px -16px rgba(0, 100, 55, 0.18);
+}
+
+.dark .glass-card {
+  background: rgba(10, 34, 25, 0.65);
+  border-color: rgba(250, 245, 233, 0.08);
+  box-shadow: none;
 }
 
 .glass-card-hover {
@@ -99,14 +242,26 @@
 }
 
 .glass-card-hover:hover {
-  background: rgba(24, 38, 32, 0.75);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 155, 77, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px -10px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 12px 30px -10px rgba(0, 155, 77, 0.18);
+}
+
+.dark .glass-card-hover:hover {
+  background: rgba(14, 44, 32, 0.75);
+  border-color: rgba(0, 155, 77, 0.35);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #009b4d 0%, #12a65d 45%, #b88f00 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, #6fe0a6 0%, #009b4d 50%, #ffcc00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
