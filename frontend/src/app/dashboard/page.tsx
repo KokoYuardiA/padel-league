@@ -119,7 +119,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Top Welcome Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/80 dark:bg-gradient-to-r dark:from-emerald-950 dark:via-emerald-900/60 dark:to-slate-950 border border-emerald-200 dark:border-emerald-700/50 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white/80 dark:bg-transparent dark:bg-gradient-to-r dark:from-emerald-950 dark:via-emerald-900/60 dark:to-slate-950 border border-emerald-200 dark:border-emerald-700/50 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="space-y-2 z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
             <SparklesIcon /> Player Dashboard

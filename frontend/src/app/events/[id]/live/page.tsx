@@ -498,7 +498,7 @@ export default function EventLivePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header Live Bar */}
-      <div className="p-6 rounded-3xl bg-white/80 dark:bg-gradient-to-r dark:from-emerald-950 dark:via-emerald-900/80 dark:to-slate-950 border border-emerald-200 dark:border-emerald-700/50 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-6 rounded-3xl bg-white/80 dark:bg-transparent dark:bg-gradient-to-r dark:from-emerald-950 dark:via-emerald-900/80 dark:to-slate-950 border border-emerald-200 dark:border-emerald-700/50 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <span className="flex h-3 w-3 relative">
@@ -855,7 +855,7 @@ export default function EventLivePage() {
                           key={row.userId}
                           className={
                             isTop
-                              ? 'bg-emerald-100 dark:bg-gradient-to-r dark:from-emerald-900/50 dark:to-lime-950/30 font-bold'
+                              ? 'bg-emerald-100 dark:bg-transparent dark:bg-gradient-to-r dark:from-emerald-900/60 dark:to-lime-950/40 font-bold'
                               : 'hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40'
                           }
                         >
