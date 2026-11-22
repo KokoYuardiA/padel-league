@@ -109,29 +109,14 @@ Find the user id in **Authentication → Users**.
 
 ## 6. Keep-alive & monitoring
 
-**Prevent Supabase's 7-day auto-pause** with a scheduled GitHub Actions workflow in the forked repo, e.g.
-`.github/workflows/keep-alive.yml`:
+**Prevent Supabase's 7-day auto-pause** — three layers are built in so the database stays awake without manual intervention:
 
-```yaml
-name: Keep Supabase awake
-on:
-  schedule:
-    - cron: '0 3 * * 1,4' # Mondays and Thursdays, 03:00 UTC
-  workflow_dispatch:
-jobs:
-  ping:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Ping Supabase REST endpoint
-        run: curl -sf "${{ secrets.SUPABASE_URL }}/rest/v1/" -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
-```
-
-Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` as repo secrets (**Settings → Secrets and variables →
-Actions**) before enabling this.
-
-**Monitor uptime** by pointing UptimeRobot's free plan at `https://<backend-vercel-domain>/health` — it
-emails an alert if the backend goes down, without anyone needing to watch it manually. Serverless functions
-don't sleep-on-idle the way Render's free tier did, so this is a pure health check, not a wake-up ping.
+1. **Built-in Vercel Cron (`backend/vercel.json`) + DB-touching `/health`:**
+   `GET /health` runs a lightweight `HEAD` query against Supabase (`groups` table), and `backend/vercel.json` schedules a daily Vercel Cron job (`0 3 * * *`, 03:00 UTC every day) against `/health`. Because this runs inside the deployed backend on Vercel, it automatically uses the backend's existing `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` environment variables — **zero extra secrets or setup required**.
+2. **UptimeRobot (every 5 minutes):**
+   Point UptimeRobot's free plan at `https://<backend-vercel-domain>/health`. Because `/health` queries Supabase on every call and returns `503` if Supabase is unreachable, UptimeRobot both keeps Supabase continuously active and emails an alert if either Vercel or Supabase goes down.
+3. **GitHub Actions backup (`.github/workflows/keep-alive.yml`):**
+   Already committed in `.github/workflows/keep-alive.yml` (runs Mondays and Thursdays at 03:00 UTC, plus manual `workflow_dispatch`). Add either `BACKEND_URL` (e.g. `https://<backend-vercel-domain>`) or `SUPABASE_URL` + `SUPABASE_ANON_KEY` under **Settings → Secrets and variables → Actions** in GitHub as a secondary backup ping.
 
 ## 7. End-to-end smoke test
 

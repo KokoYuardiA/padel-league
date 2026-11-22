@@ -1,0 +1,26 @@
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: '0 3 * * 1,4' # Mondays and Thursdays, 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health or Supabase REST endpoint
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$BACKEND_URL" ]; then
+            echo "Pinging backend /health endpoint (which queries Supabase)..."
+            curl -sf "${BACKEND_URL%/}/health"
+          elif [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            echo "Pinging Supabase REST endpoint directly..."
+            curl -sf "${SUPABASE_URL%/}/rest/v1/groups?select=id&limit=1" -H "apikey: $SUPABASE_ANON_KEY"
+          else
+            echo "Neither BACKEND_URL nor SUPABASE_URL + SUPABASE_ANON_KEY secrets are configured; skipping."
+          fi

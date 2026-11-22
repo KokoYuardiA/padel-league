@@ -11,6 +11,7 @@ import { playersRouter } from './routes/players.routes'
 import { adminRouter } from './routes/admin.routes'
 import { publicRouter } from './routes/public.routes'
 import { errorHandler } from './middlewares/error.middleware'
+import { supabaseAdmin } from './lib/supabase'
 
 const app = express()
 
@@ -28,8 +29,26 @@ app.use((req, _res, next) => {
 })
 
 // ── API Routes ──────────────────────────────────────────────
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+app.get('/health', async (_req, res) => {
+  const { error } = await supabaseAdmin
+    .from('groups')
+    .select('id', { count: 'exact', head: true })
+
+  if (error) {
+    res.status(503).json({
+      status: 'degraded',
+      database: 'unreachable',
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    })
+    return
+  }
+
+  res.json({
+    status: 'ok',
+    database: 'connected',
+    timestamp: new Date().toISOString(),
+  })
 })
 
 // ── API Docs (OpenAPI / Swagger) ──────────────────────────────
