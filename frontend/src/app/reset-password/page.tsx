@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Trophy, Lock, ArrowRight, AlertCircle, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/providers/auth-provider'
 
 export default function ResetPasswordPage() {
-  const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -34,8 +32,9 @@ export default function ResetPasswordPage() {
       return
     }
 
-    router.push('/dashboard')
-    router.refresh()
+    // Hard navigation so the request carries the just-set auth cookies —
+    // see the same fix on the login page for why router.push races.
+    window.location.href = '/dashboard'
   }
 
   if (authLoading) {

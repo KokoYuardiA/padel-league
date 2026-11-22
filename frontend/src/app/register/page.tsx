@@ -2,12 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Trophy, Mail, Lock, User, Phone, Award, ArrowRight, AlertCircle, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -47,8 +45,9 @@ export default function RegisterPage() {
     setLoading(false)
 
     if (data.session) {
-      router.push('/dashboard')
-      router.refresh()
+      // Hard navigation so the request carries the just-set auth cookies —
+      // see the same fix on the login page for why router.push races.
+      window.location.href = '/dashboard'
     } else {
       // Email confirmation is required before a session is issued.
       setCheckEmail(true)

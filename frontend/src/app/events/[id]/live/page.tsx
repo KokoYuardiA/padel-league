@@ -848,22 +848,29 @@ export default function EventLivePage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-emerald-200/60 dark:divide-emerald-900/40 text-xs">
-                    {leaderboard.map((row) => (
-                      <tr
-                        key={row.userId}
-                        className={
-                          row.rank === 1
-                            ? 'bg-emerald-100 dark:bg-gradient-to-r dark:from-emerald-900/50 dark:to-lime-950/30 font-bold text-emerald-950 dark:text-white'
-                            : 'hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300'
-                        }
-                      >
-                        <td className="py-3.5 px-4 font-bold text-slate-600 dark:text-slate-300">#{row.rank}</td>
-                        <td className="py-3.5 px-4 font-bold text-emerald-950 dark:text-white">{row.name}</td>
-                        <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{row.matchesPlayed} Matches</td>
-                        <td className="py-3.5 px-4 text-emerald-600 dark:text-emerald-400">{row.winRate}%</td>
-                        <td className="py-3.5 px-4 text-right font-extrabold text-lime-600 dark:text-lime-400 text-sm">{row.points} pts</td>
-                      </tr>
-                    ))}
+                    {leaderboard.map((row) => {
+                      const isTop = row.rank === 1
+                      return (
+                        <tr
+                          key={row.userId}
+                          className={
+                            isTop
+                              ? 'bg-emerald-100 dark:bg-gradient-to-r dark:from-emerald-900/50 dark:to-lime-950/30 font-bold'
+                              : 'hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40'
+                          }
+                        >
+                          <td className={`py-3.5 px-4 font-bold ${isTop ? 'text-emerald-950 dark:text-white' : 'text-slate-600 dark:text-slate-300'}`}>
+                            #{row.rank}
+                          </td>
+                          <td className="py-3.5 px-4 font-bold text-emerald-950 dark:text-white">{row.name}</td>
+                          <td className={`py-3.5 px-4 ${isTop ? 'text-emerald-800 dark:text-emerald-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {row.matchesPlayed} Matches
+                          </td>
+                          <td className="py-3.5 px-4 text-emerald-600 dark:text-emerald-400">{row.winRate}%</td>
+                          <td className="py-3.5 px-4 text-right font-extrabold text-lime-600 dark:text-lime-400 text-sm">{row.points} pts</td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>

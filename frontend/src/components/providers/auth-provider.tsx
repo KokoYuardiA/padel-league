@@ -33,7 +33,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession)
+      // Supabase re-fires this listener (e.g. SIGNED_IN/INITIAL_SESSION)
+      // whenever the tab regains focus, even when the session hasn't
+      // actually changed. Keep the previous object reference in that case
+      // so `user`/`session` stay referentially stable — otherwise every
+      // page effect keyed on `user` (most data fetches) re-runs and the
+      // whole app appears to "reload" on every tab switch.
+      setSession((prev) => {
+        const same =
+          prev?.access_token === newSession?.access_token && prev?.user?.id === newSession?.user?.id
+        return same ? prev : newSession
+      })
       setLoading(false)
     })
 

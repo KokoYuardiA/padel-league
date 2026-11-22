@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Logo } from '@/components/layout/logo'
@@ -16,7 +16,6 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -42,8 +41,12 @@ function LoginForm() {
       return
     }
 
-    router.push(searchParams.get('next') || '/dashboard')
-    router.refresh()
+    // Hard navigation (not router.push) so the request that loads the next
+    // page is guaranteed to carry the just-set auth cookies — a client-side
+    // transition can race the cookie write and bounce off the middleware
+    // back to /login, forcing a second sign-in attempt.
+    const next = searchParams.get('next') || '/dashboard'
+    window.location.href = next.startsWith('/') ? next : '/dashboard'
   }
 
   return (
