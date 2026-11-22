@@ -22,6 +22,8 @@ import {
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
 import { createClient } from '@/lib/supabase/client'
+import { EventLiveSkeleton } from '@/components/ui/skeleton'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 interface PlayerRef {
   id: string
@@ -122,11 +124,22 @@ export default function EventLivePage() {
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false)
   const [promotingId, setPromotingId] = useState<string | null>(null)
   const [changingStatus, setChangingStatus] = useState(false)
+  const [changingStatusTarget, setChangingStatusTarget] = useState<string | null>(null)
   const [generatingSchedule, setGeneratingSchedule] = useState(false)
   const [generatingNextRound, setGeneratingNextRound] = useState(false)
   const [resettingSchedule, setResettingSchedule] = useState(false)
   const [showResetScheduleConfirm, setShowResetScheduleConfirm] = useState(false)
   const [scheduleWarning, setScheduleWarning] = useState('')
+
+  const [showInputModal, setShowInputModal] = useState(false)
+  const [scoreModalMode, setScoreModalMode] = useState<'self' | 'override'>('self')
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [selectedMatch, setSelectedMatch] = useState<MatchItem | null>(null)
+  const [scoreTeamA, setScoreTeamA] = useState(0)
+  const [scoreTeamB, setScoreTeamB] = useState(0)
+  const [savingScore, setSavingScore] = useState(false)
+  const [resolvingAction, setResolvingAction] = useState<'confirm' | 'dispute' | null>(null)
+  const [actionError, setActionError] = useState('')
 
   const [showEditEventModal, setShowEditEventModal] = useState(false)
   const [editTitle, setEditTitle] = useState('')
@@ -139,14 +152,6 @@ export default function EventLivePage() {
   const [editMaxPlayers, setEditMaxPlayers] = useState(4)
   const [savingEvent, setSavingEvent] = useState(false)
   const [editEventError, setEditEventError] = useState('')
-
-  const [showInputModal, setShowInputModal] = useState(false)
-  const [scoreModalMode, setScoreModalMode] = useState<'self' | 'override'>('self')
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [selectedMatch, setSelectedMatch] = useState<MatchItem | null>(null)
-  const [scoreTeamA, setScoreTeamA] = useState(0)
-  const [scoreTeamB, setScoreTeamB] = useState(0)
-  const [actionError, setActionError] = useState('')
 
   const isOrganizerOrAdmin = myGroupRole === 'Organizer' || myGroupRole === 'Group Admin'
 
@@ -352,7 +357,8 @@ export default function EventLivePage() {
   }
 
   const handleSaveScore = async () => {
-    if (!selectedMatch) return
+    if (!selectedMatch || savingScore) return
+    setSavingScore(true)
     setActionError('')
     const endpoint =
       scoreModalMode === 'override'
@@ -367,12 +373,15 @@ export default function EventLivePage() {
       setShowInputModal(false)
     } catch (err) {
       setActionError(err instanceof ApiError ? err.message : 'Failed to save score.')
+    } finally {
+      setSavingScore(false)
     }
   }
 
   const handleChangeStatus = async (nextStatus: string) => {
     if (!eventId) return
     setChangingStatus(true)
+    setChangingStatusTarget(nextStatus)
     setActionError('')
     try {
       const { data } = await apiFetch<{ data: { status: string } }>(`/api/events/${eventId}/status`, {
@@ -384,6 +393,7 @@ export default function EventLivePage() {
       setActionError(err instanceof ApiError ? err.message : 'Failed to change event status.')
     } finally {
       setChangingStatus(false)
+      setChangingStatusTarget(null)
     }
   }
 
@@ -496,7 +506,8 @@ export default function EventLivePage() {
   }
 
   const handleResolve = async (action: 'confirm' | 'dispute') => {
-    if (!selectedMatch) return
+    if (!selectedMatch || resolvingAction) return
+    setResolvingAction(action)
     setActionError('')
     try {
       const { data } = await apiFetch<{ data: MatchPatchResult }>(`/api/matches/${selectedMatch.id}/confirm`, {
@@ -507,6 +518,8 @@ export default function EventLivePage() {
       setShowConfirmModal(false)
     } catch (err) {
       setActionError(err instanceof ApiError ? err.message : 'Failed to process confirmation.')
+    } finally {
+      setResolvingAction(null)
     }
   }
 
@@ -574,8 +587,8 @@ export default function EventLivePage() {
     )
   }
 
-  if (loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading event...</p>
+  if (authLoading || loading) {
+    return <EventLiveSkeleton />
   }
 
   if (error || !event) {
@@ -664,10 +677,15 @@ export default function EventLivePage() {
                 <button
                   onClick={handleGenerateSchedule}
                   disabled={generatingSchedule}
-                  className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1.5"
+                  aria-busy={generatingSchedule}
+                  className="min-w-[154px] text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
                 >
-                  <Wand2 className="h-3.5 w-3.5" />
-                  {generatingSchedule ? 'Creating schedule...' : 'Generate Schedule'}
+                  {generatingSchedule ? (
+                    <InlineSpinner variant="dark" label="Creating schedule" />
+                  ) : (
+                    <Wand2 className="h-3.5 w-3.5" />
+                  )}
+                  <span>{generatingSchedule ? 'Creating schedule...' : 'Generate Schedule'}</span>
                 </button>
               ) : (
                 <span className="text-[11px] text-slate-500">
@@ -687,15 +705,20 @@ export default function EventLivePage() {
                   <button
                     onClick={handleGenerateNextRound}
                     disabled={generatingNextRound || !matches.every((m) => m.status === 'confirmed')}
+                    aria-busy={generatingNextRound}
                     title={
                       matches.every((m) => m.status === 'confirmed')
                         ? undefined
                         : 'Finish all scores for this round first (use Override if any are stuck)'
                     }
-                    className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1.5"
+                    className="min-w-[168px] text-xs font-bold text-emerald-950 bg-gradient-to-r from-amber-300 to-lime-300 hover:from-amber-200 hover:to-lime-200 px-3.5 py-1.5 rounded-lg disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
                   >
-                    <Wand2 className="h-3.5 w-3.5" />
-                    {generatingNextRound ? 'Creating round...' : 'Generate Next Round'}
+                    {generatingNextRound ? (
+                      <InlineSpinner variant="dark" label="Creating next round" />
+                    ) : (
+                      <Wand2 className="h-3.5 w-3.5" />
+                    )}
+                    <span>{generatingNextRound ? 'Creating round...' : 'Generate Next Round'}</span>
                   </button>
                   {!matches.every((m) => m.status === 'confirmed') && (
                     <span className="text-[11px] text-slate-500">Waiting for all scores in this round to be confirmed.</span>
@@ -721,16 +744,21 @@ export default function EventLivePage() {
               </button>
             )}
             {EVENT_STATUS_TRANSITIONS[event.status]?.length ? (
-              EVENT_STATUS_TRANSITIONS[event.status].map((next) => (
-                <button
-                  key={next}
-                  onClick={() => handleChangeStatus(next)}
-                  disabled={changingStatus}
-                  className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-3.5 py-1.5 rounded-lg disabled:opacity-50"
-                >
-                  {changingStatus ? '...' : `→ ${next}`}
-                </button>
-              ))
+              EVENT_STATUS_TRANSITIONS[event.status].map((next) => {
+                const isThisChanging = changingStatus && changingStatusTarget === next
+                return (
+                  <button
+                    key={next}
+                    onClick={() => handleChangeStatus(next)}
+                    disabled={changingStatus}
+                    aria-busy={isThisChanging}
+                    className="min-w-[96px] inline-flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-3.5 py-1.5 rounded-lg disabled:opacity-50"
+                  >
+                    {isThisChanging && <InlineSpinner variant="dark" size={14} label={`Transitioning to ${next}`} />}
+                    <span>{isThisChanging ? `${next}...` : `→ ${next}`}</span>
+                  </button>
+                )
+              })
             ) : (
               <span className="text-[11px] text-slate-500">Final status, no further transitions available.</span>
             )}
@@ -747,9 +775,11 @@ export default function EventLivePage() {
           <button
             onClick={handleRegister}
             disabled={registering}
-            className="text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2 rounded-xl disabled:opacity-50 shrink-0"
+            aria-busy={registering}
+            className="min-w-[124px] inline-flex items-center justify-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-4 py-2 rounded-xl disabled:opacity-50 shrink-0"
           >
-            {registering ? 'Registering...' : 'Register Now'}
+            {registering && <InlineSpinner variant="dark" size={14} label="Registering" />}
+            <span>{registering ? 'Registering...' : 'Register Now'}</span>
           </button>
         </div>
       )}
@@ -1064,9 +1094,11 @@ export default function EventLivePage() {
                             <button
                               onClick={() => handlePromote(r.id)}
                               disabled={promotingId === r.id}
-                              className="text-[11px] font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-2.5 py-1 rounded-lg disabled:opacity-50"
+                              aria-busy={promotingId === r.id}
+                              className="min-w-[84px] inline-flex items-center justify-center gap-1.5 text-[11px] font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 px-2.5 py-1 rounded-lg disabled:opacity-50"
                             >
-                              {promotingId === r.id ? 'Processing...' : 'Promote'}
+                              {promotingId === r.id && <InlineSpinner variant="dark" size={12} label="Promoting player" />}
+                              <span>{promotingId === r.id ? 'Promoting...' : 'Promote'}</span>
                             </button>
                           )}
                         </td>
@@ -1135,9 +1167,18 @@ export default function EventLivePage() {
               </button>
               <button
                 onClick={handleSaveScore}
-                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg"
+                disabled={savingScore}
+                aria-busy={savingScore}
+                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {scoreModalMode === 'override' ? 'Save Override' : 'Submit Score'}
+                {savingScore && <InlineSpinner variant="dark" label="Saving score" />}
+                <span>
+                  {savingScore
+                    ? 'Saving...'
+                    : scoreModalMode === 'override'
+                    ? 'Save Override'
+                    : 'Submit Score'}
+                </span>
               </button>
             </div>
           </div>
@@ -1167,15 +1208,21 @@ export default function EventLivePage() {
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={() => handleResolve('dispute')}
-                className="w-1/2 py-2.5 text-xs font-semibold text-rose-600 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 rounded-xl hover:bg-rose-200 dark:hover:bg-rose-900/50"
+                disabled={resolvingAction !== null}
+                aria-busy={resolvingAction === 'dispute'}
+                className="w-1/2 py-2.5 text-xs font-semibold text-rose-600 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 rounded-xl hover:bg-rose-200 dark:hover:bg-rose-900/50 disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                Dispute
+                {resolvingAction === 'dispute' && <InlineSpinner label="Disputing score" />}
+                <span>{resolvingAction === 'dispute' ? 'Disputing...' : 'Dispute'}</span>
               </button>
               <button
                 onClick={() => handleResolve('confirm')}
-                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-lime-400 hover:bg-lime-300 rounded-xl shadow-lg"
+                disabled={resolvingAction !== null}
+                aria-busy={resolvingAction === 'confirm'}
+                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-lime-400 hover:bg-lime-300 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                Confirm Correct
+                {resolvingAction === 'confirm' && <InlineSpinner variant="dark" label="Confirming score" />}
+                <span>{resolvingAction === 'confirm' ? 'Confirming...' : 'Confirm Correct'}</span>
               </button>
             </div>
           </div>
@@ -1210,9 +1257,11 @@ export default function EventLivePage() {
               <button
                 onClick={handleWithdraw}
                 disabled={withdrawing}
-                className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50"
+                aria-busy={withdrawing}
+                className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {withdrawing ? 'Processing...' : 'Yes, Cancel'}
+                {withdrawing && <InlineSpinner label="Cancelling registration" />}
+                <span>{withdrawing ? 'Cancelling...' : 'Yes, Cancel'}</span>
               </button>
             </div>
           </div>
@@ -1246,9 +1295,11 @@ export default function EventLivePage() {
               <button
                 onClick={handleResetSchedule}
                 disabled={resettingSchedule}
-                className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50"
+                aria-busy={resettingSchedule}
+                className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {resettingSchedule ? 'Resetting...' : 'Yes, Reset'}
+                {resettingSchedule && <InlineSpinner label="Resetting schedule" />}
+                <span>{resettingSchedule ? 'Resetting...' : 'Yes, Reset'}</span>
               </button>
             </div>
           </div>
@@ -1385,9 +1436,11 @@ export default function EventLivePage() {
               <button
                 type="submit"
                 disabled={savingEvent}
-                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50"
+                aria-busy={savingEvent}
+                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {savingEvent ? 'Saving...' : 'Save Changes'}
+                {savingEvent && <InlineSpinner variant="dark" label="Saving event changes" />}
+                <span>{savingEvent ? 'Saving...' : 'Save Changes'}</span>
               </button>
             </div>
           </form>

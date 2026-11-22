@@ -5,6 +5,8 @@ import { User, Phone, Mail, Check, Camera, Save, AlertCircle, Trophy } from 'luc
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/providers/auth-provider'
 import { apiFetch, ApiError } from '@/lib/api'
+import { ProfileSkeleton, ProfileStatsSkeleton } from '@/components/ui/skeleton'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 interface Profile {
   id: string
@@ -179,7 +181,7 @@ export default function ProfilePage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-3xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading profile...</p>
+    return <ProfileSkeleton />
   }
 
   if (!user) {
@@ -227,9 +229,10 @@ export default function ProfilePage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
+              aria-busy={uploading}
               className="absolute bottom-0 right-0 p-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900 border border-emerald-500 text-emerald-700 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-white disabled:opacity-50"
             >
-              <Camera className="h-3.5 w-3.5" />
+              {uploading ? <InlineSpinner size={14} label="Uploading avatar" /> : <Camera className="h-3.5 w-3.5" />}
             </button>
             <input
               ref={fileInputRef}
@@ -349,10 +352,11 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
+            aria-busy={saving}
+            className="min-w-[164px] inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
-            <Save className="h-4 w-4 stroke-[2.5]" />
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? <InlineSpinner variant="dark" label="Saving profile" /> : <Save className="h-4 w-4 stroke-[2.5]" />}
+            <span>{saving ? 'Saving...' : 'Save Changes'}</span>
           </button>
         </div>
       </form>
@@ -368,7 +372,7 @@ export default function ProfilePage() {
         </div>
 
         {statsLoading ? (
-          <p className="text-xs text-slate-500 dark:text-slate-400">Loading match history...</p>
+          <ProfileStatsSkeleton />
         ) : statsError ? (
           <p className="text-xs text-rose-500 dark:text-rose-400">{statsError}</p>
         ) : (

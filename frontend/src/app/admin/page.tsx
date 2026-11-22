@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { ShieldAlert, Users, Globe, Lock, Ban, CheckCircle2 } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { AdminSkeleton } from '@/components/ui/skeleton'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 interface AdminGroup {
   id: string
@@ -72,7 +74,7 @@ export default function AdminPage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-6xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading...</p>
+    return <AdminSkeleton />
   }
 
   if (accessDenied) {
@@ -139,14 +141,21 @@ export default function AdminPage() {
                       <button
                         onClick={() => toggleSuspend(g)}
                         disabled={busyGroupId === g.id}
-                        className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg border disabled:opacity-50 ${
+                        aria-busy={busyGroupId === g.id}
+                        className={`min-w-[104px] inline-flex items-center justify-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg border disabled:opacity-50 ${
                           g.suspended_at
                             ? 'text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/40'
                             : 'text-rose-600 dark:text-rose-300 border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/30'
                         }`}
                       >
-                        {g.suspended_at ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Ban className="h-3.5 w-3.5" />}
-                        {g.suspended_at ? 'Unsuspend' : 'Suspend'}
+                        {busyGroupId === g.id ? (
+                          <InlineSpinner size={14} label="Updating group status" />
+                        ) : g.suspended_at ? (
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                        ) : (
+                          <Ban className="h-3.5 w-3.5" />
+                        )}
+                        <span>{g.suspended_at ? 'Unsuspend' : 'Suspend'}</span>
                       </button>
                     </td>
                   </tr>

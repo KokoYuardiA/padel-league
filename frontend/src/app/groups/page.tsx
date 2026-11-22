@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Users, Plus, Lock, Globe, ChevronRight, Search, LogIn } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { GroupsGridSkeleton } from '@/components/ui/skeleton'
 
 interface GroupMembership {
   role: string
@@ -95,9 +96,9 @@ export default function GroupsPage() {
       </div>
 
       {/* Loading / Error / Empty States */}
-      {loading && <p className="text-xs text-slate-500 dark:text-slate-400">Loading groups...</p>}
-      {!loading && error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
-      {!loading && !error && filteredGroups.length === 0 && (
+      {(authLoading || loading) && <GroupsGridSkeleton count={6} />}
+      {!authLoading && !loading && error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
+      {!authLoading && !loading && !error && filteredGroups.length === 0 && (
         <div className="text-center py-16 space-y-3">
           <Users className="h-10 w-10 text-emerald-700 mx-auto" />
           <p className="text-sm text-slate-500 dark:text-slate-400">You have not joined any groups yet.</p>

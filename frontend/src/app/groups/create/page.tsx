@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Users, Globe, Lock, ArrowRight, ShieldCheck, Check, AlertCircle } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 export default function CreateGroupPage() {
   const router = useRouter()
@@ -125,9 +126,11 @@ export default function CreateGroupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
+            aria-busy={loading}
+            className="w-full sm:w-auto min-w-[180px] inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
-            {loading ? 'Creating Group...' : 'Create Group Now'}
+            {loading && <InlineSpinner variant="dark" label="Creating group" />}
+            <span>{loading ? 'Creating Group...' : 'Create Group Now'}</span>
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </div>

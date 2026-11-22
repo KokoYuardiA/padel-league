@@ -17,9 +17,12 @@ import {
 import { useAuth } from '@/components/providers/auth-provider'
 import { Logo } from '@/components/layout/logo'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
   const { user, loading, signOut } = useAuth()
@@ -32,10 +35,16 @@ export function Navbar() {
     .toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'
 
   const handleSignOut = async () => {
-    setMobileMenuOpen(false)
-    await signOut()
-    router.push('/')
-    router.refresh()
+    if (signingOut) return
+    setSigningOut(true)
+    try {
+      await signOut()
+      setMobileMenuOpen(false)
+      router.push('/')
+      router.refresh()
+    } finally {
+      setSigningOut(false)
+    }
   }
 
   const navLinks = [
@@ -75,7 +84,12 @@ export function Navbar() {
         {/* Desktop CTA & Profile */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          {loading ? null : user ? (
+          {loading ? (
+            <div className="flex items-center gap-2" aria-hidden="true">
+              <Skeleton className="h-9 w-28 rounded-xl" />
+              <Skeleton className="h-9 w-20 rounded-lg" />
+            </div>
+          ) : user ? (
             <>
               <Link
                 href="/profile"
@@ -92,10 +106,21 @@ export function Navbar() {
               </Link>
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                disabled={signingOut}
+                aria-busy={signingOut}
+                className="min-w-[88px] flex items-center justify-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors disabled:opacity-60"
               >
-                <LogOut className="h-3.5 w-3.5" />
-                Sign Out
+                {signingOut ? (
+                  <>
+                    <InlineSpinner label="Signing out" />
+                    <span>Signing out...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut className="h-3.5 w-3.5" />
+                    <span>Sign Out</span>
+                  </>
+                )}
               </button>
             </>
           ) : (
@@ -168,10 +193,21 @@ export function Navbar() {
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-1.5 text-center py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/60 dark:bg-emerald-900/30 rounded-xl"
+                disabled={signingOut}
+                aria-busy={signingOut}
+                className="w-full flex items-center justify-center gap-1.5 text-center py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-950 dark:hover:text-white bg-emerald-100/60 dark:bg-emerald-900/30 rounded-xl disabled:opacity-60"
               >
-                <LogOut className="h-4 w-4" />
-                Sign Out
+                {signingOut ? (
+                  <>
+                    <InlineSpinner label="Signing out" />
+                    <span>Signing out...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </>
+                )}
               </button>
             ) : (
             <Link

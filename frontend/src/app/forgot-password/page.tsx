@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Trophy, Mail, ArrowRight, AlertCircle, Check, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -79,9 +80,11 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
+              aria-busy={loading}
               className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
             >
-              {loading ? 'Sending...' : 'Send Reset Link'}
+              {loading && <InlineSpinner variant="dark" label="Sending reset link" />}
+              <span>{loading ? 'Sending...' : 'Send Reset Link'}</span>
               {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
             </button>
           </form>

@@ -15,6 +15,8 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface GroupMembership {
   role: string
@@ -31,7 +33,7 @@ const EVENT_FORMATS = [
 
 export default function CreateEventPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div className="max-w-3xl mx-auto px-4 py-10"><Skeleton className="h-96 w-full rounded-3xl" /></div>}>
       <CreateEventForm />
     </Suspense>
   )
@@ -267,9 +269,11 @@ function CreateEventForm() {
           <button
             type="submit"
             disabled={loading || eligibleGroups.length === 0}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
+            aria-busy={loading}
+            className="w-full sm:w-auto min-w-[164px] inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 px-6 py-3 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
-            {loading ? 'Creating Event...' : 'Create Event'}
+            {loading && <InlineSpinner variant="dark" label="Creating event" />}
+            <span>{loading ? 'Creating Event...' : 'Create Event'}</span>
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </div>

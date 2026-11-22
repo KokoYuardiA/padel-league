@@ -6,6 +6,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { Users, Check, AlertCircle, LogIn, ShieldAlert } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { PadelLoader } from '@/components/ui/padel-loader'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 interface GroupJoinPreview {
   id: string
@@ -68,14 +70,11 @@ export default function JoinGroupPage() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-      {status === 'loading' && (
-        <>
-          <Users className="h-10 w-10 text-emerald-600 dark:text-emerald-400 mx-auto animate-pulse" />
-          <p className="text-sm text-slate-600 dark:text-slate-300">Loading group info...</p>
-        </>
+      {(authLoading || status === 'loading') && (
+        <PadelLoader label="Loading group invitation..." />
       )}
 
-      {status === 'preview' && preview && (
+      {(status === 'preview' || status === 'joining') && preview && (
         <div className="p-6 sm:p-8 rounded-3xl glass-card border border-emerald-200/70 dark:border-emerald-900/60 space-y-4 text-left">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h1 className="text-xl font-extrabold text-emerald-950 dark:text-white">{preview.name}</h1>
@@ -105,20 +104,16 @@ export default function JoinGroupPage() {
             ) : (
               <button
                 onClick={handleConfirmJoin}
-                className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
+                disabled={status === 'joining'}
+                aria-busy={status === 'joining'}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-60"
               >
-                Join {preview.name}
+                {status === 'joining' && <InlineSpinner variant="dark" label="Joining group" />}
+                <span>{status === 'joining' ? 'Joining group...' : `Join ${preview.name}`}</span>
               </button>
             )}
           </div>
         </div>
-      )}
-
-      {status === 'joining' && (
-        <>
-          <Users className="h-10 w-10 text-emerald-600 dark:text-emerald-400 mx-auto animate-pulse" />
-          <p className="text-sm text-slate-600 dark:text-slate-300">Joining group...</p>
-        </>
       )}
       {status === 'success' && (
         <>

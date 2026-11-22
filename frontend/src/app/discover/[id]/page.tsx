@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Users, Calendar, Clock, MapPin, ArrowLeft } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { DiscoverDetailSkeleton } from '@/components/ui/skeleton'
 
 interface PublicEvent {
   id: string
@@ -44,7 +45,7 @@ export default function DiscoverGroupPage() {
   }, [params.id])
 
   if (loading) {
-    return <p className="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading group...</p>
+    return <DiscoverDetailSkeleton />
   }
 
   if (error || !group) {

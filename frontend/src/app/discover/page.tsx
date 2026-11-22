@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Compass, Globe, Users, ChevronRight, Search } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
+import { GroupsGridSkeleton } from '@/components/ui/skeleton'
 
 interface PublicGroup {
   id: string
@@ -56,7 +57,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Loading / Error / Empty States */}
-      {loading && <p className="text-xs text-slate-500 dark:text-slate-400">Loading public groups...</p>}
+      {loading && <GroupsGridSkeleton count={6} />}
       {!loading && error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
       {!loading && !error && filteredGroups.length === 0 && (
         <div className="text-center py-16 space-y-3">

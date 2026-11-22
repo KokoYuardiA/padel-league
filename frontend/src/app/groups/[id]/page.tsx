@@ -23,6 +23,8 @@ import {
 } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { GroupDetailSkeleton } from '@/components/ui/skeleton'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 interface GroupMember {
   role: string
@@ -172,7 +174,7 @@ export default function GroupDetailPage() {
   }
 
   if (loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading group...</p>
+    return <GroupDetailSkeleton />
   }
 
   if (error || !group) {
@@ -480,9 +482,11 @@ export default function GroupDetailPage() {
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50"
+                aria-busy={savingSettings}
+                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
-                {savingSettings ? 'Saving...' : 'Save'}
+                {savingSettings && <InlineSpinner variant="dark" label="Saving group settings" />}
+                <span>{savingSettings ? 'Saving...' : 'Save'}</span>
               </button>
             </div>
           </form>

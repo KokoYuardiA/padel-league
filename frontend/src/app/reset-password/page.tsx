@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Trophy, Lock, ArrowRight, AlertCircle, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/providers/auth-provider'
+import { PadelLoader } from '@/components/ui/padel-loader'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 export default function ResetPasswordPage() {
   const { user, loading: authLoading } = useAuth()
@@ -38,7 +40,7 @@ export default function ResetPasswordPage() {
   }
 
   if (authLoading) {
-    return <p className="max-w-md mx-auto px-4 py-20 text-center text-xs text-slate-500 dark:text-slate-400">Loading...</p>
+    return <PadelLoader fullHeight label="Verifying reset link..." />
   }
 
   if (!user) {
@@ -111,9 +113,11 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
           >
-            {loading ? 'Saving...' : 'Save New Password'}
+            {loading && <InlineSpinner variant="dark" label="Saving new password" />}
+            <span>{loading ? 'Saving...' : 'Save New Password'}</span>
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </form>

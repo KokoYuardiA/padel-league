@@ -15,6 +15,7 @@ import {
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
 import { createClient } from '@/lib/supabase/client'
+import { DashboardSkeleton } from '@/components/ui/skeleton'
 
 interface GroupMembership {
   role: string
@@ -113,7 +114,7 @@ export default function DashboardPage() {
   }
 
   if (authLoading || loading) {
-    return <p className="max-w-7xl mx-auto px-4 py-16 text-xs text-slate-500 dark:text-slate-400">Loading dashboard...</p>
+    return <DashboardSkeleton />
   }
 
   return (

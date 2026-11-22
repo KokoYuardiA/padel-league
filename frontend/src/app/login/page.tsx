@@ -6,10 +6,12 @@ import { useSearchParams } from 'next/navigation'
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Logo } from '@/components/layout/logo'
+import { PadelLoader } from '@/components/ui/padel-loader'
+import { InlineSpinner } from '@/components/ui/inline-spinner'
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<PadelLoader fullHeight label="Preparing sign in..." />}>
       <LoginForm />
     </Suspense>
   )
@@ -107,9 +109,11 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 hover:from-emerald-300 hover:to-lime-300 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 mt-2"
           >
-            {loading ? 'Processing...' : 'Sign In'}
+            {loading && <InlineSpinner variant="dark" label="Signing in" />}
+            <span>{loading ? 'Signing In...' : 'Sign In'}</span>
             {!loading && <ArrowRight className="h-4 w-4 stroke-[2.5]" />}
           </button>
         </form>

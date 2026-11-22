@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Calendar, Plus, Clock, MapPin, ChevronRight, LogIn } from 'lucide-react'
 import { apiFetch, ApiError } from '@/lib/api'
 import { useAuth } from '@/components/providers/auth-provider'
+import { EventsGridSkeleton } from '@/components/ui/skeleton'
 
 interface GroupMembership {
   role: string
@@ -96,9 +97,9 @@ export default function EventsPage() {
         </Link>
       </div>
 
-      {loading && <p className="text-xs text-slate-500 dark:text-slate-400">Loading events...</p>}
-      {!loading && error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
-      {!loading && !error && events.length === 0 && (
+      {(authLoading || loading) && <EventsGridSkeleton count={6} />}
+      {!authLoading && !loading && error && <p className="text-xs text-rose-500 dark:text-rose-400">{error}</p>}
+      {!authLoading && !loading && !error && events.length === 0 && (
         <div className="text-center py-16 space-y-3">
           <Calendar className="h-10 w-10 text-emerald-700 mx-auto" />
           <p className="text-sm text-slate-500 dark:text-slate-400">No events yet in your groups.</p>
