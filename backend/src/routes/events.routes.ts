@@ -53,6 +53,21 @@ export const UpdateEventStatusSchema = z.object({
   status: z.enum(EVENT_STATUSES),
 })
 
+// ── PATCH /api/events/:id ─────────────────────────────────────
+export const UpdateEventSchema = z
+  .object({
+    title: z.string().min(3).max(200).optional(),
+    description: z.string().max(1000).nullable().optional(),
+    format: z.enum(['Americano', 'Mexicano', 'Fixed Partner', 'Mixed Partner', 'Round Robin']).optional(),
+    event_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format').optional(),
+    start_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, 'Time must be in HH:MM format').optional(),
+    location: z.string().min(3).max(200).optional(),
+    courts_count: z.number().int().min(1).max(20).optional(),
+    max_players: z.number().int().min(4).max(64).optional(),
+    registration_deadline: z.string().datetime().nullable().optional(),
+  })
+  .refine((body) => Object.keys(body).length > 0, { message: 'At least one field must be provided' })
+
 export const eventsRouter = Router()
 
 // ── GET /api/events?group_id=... ────────────────────────────
@@ -150,6 +165,98 @@ eventsRouter.get(
     }
 
     res.json({ data: { ...event, registrations: attachWaitingListPosition(registrations) } })
+  }
+)
+
+// ── PATCH /api/events/:id ──────────────────────────────────────
+// Edit event details — Organizer or Group Admin only.
+// Blocked if the event is already in a terminal status (Completed / Cancelled).
+// Format and courts_count cannot be changed while a schedule exists (reset first),
+// and max_players cannot be lowered below the current registered count.
+eventsRouter.patch(
+  '/:id',
+  requireAuth,
+  requireGroupRole(ORGANIZER_OR_ADMIN, groupIdFromEventParam('id')),
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const eventId = req.params.id
+    const parsed = UpdateEventSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Validation failed', details: parsed.error.flatten() })
+      return
+    }
+
+    const { data: event, error: eventError } = await supabaseAdmin
+      .from('events')
+      .select('id, status, format, courts_count, max_players')
+      .eq('id', eventId)
+      .single()
+
+    if (eventError || !event) {
+      res.status(404).json({ error: 'Event not found' })
+      return
+    }
+
+    if (event.status === 'Completed' || event.status === 'Cancelled') {
+      res.status(400).json({ error: `Cannot edit an event that is already '${event.status}'` })
+      return
+    }
+
+    const wantsFormatChange = parsed.data.format !== undefined && parsed.data.format !== event.format
+    const wantsCourtsChange = parsed.data.courts_count !== undefined && parsed.data.courts_count !== event.courts_count
+
+    if (wantsFormatChange || wantsCourtsChange) {
+      const { count: matchesCount, error: matchesError } = await supabaseAdmin
+        .from('matches')
+        .select('id', { count: 'exact', head: true })
+        .eq('event_id', eventId)
+
+      if (matchesError) {
+        res.status(500).json({ error: matchesError.message })
+        return
+      }
+
+      if ((matchesCount ?? 0) > 0) {
+        res.status(409).json({
+          error: 'Cannot change event format or number of courts while a match schedule exists. Reset the schedule first.',
+        })
+        return
+      }
+    }
+
+    if (parsed.data.max_players !== undefined && parsed.data.max_players < event.max_players) {
+      const { count: registeredCount, error: regError } = await supabaseAdmin
+        .from('event_registrations')
+        .select('id', { count: 'exact', head: true })
+        .eq('event_id', eventId)
+        .eq('status', 'registered')
+
+      if (regError) {
+        res.status(500).json({ error: regError.message })
+        return
+      }
+
+      const currentRegistered = registeredCount ?? 0
+      if (parsed.data.max_players < currentRegistered) {
+        res.status(400).json({
+          error: `Cannot reduce maximum players to ${parsed.data.max_players} because ${currentRegistered} player(s) are already registered.`,
+        })
+        return
+      }
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('events')
+      .update(parsed.data)
+      .eq('id', eventId)
+      .select()
+      .single()
+
+    if (error) {
+      res.status(500).json({ error: error.message })
+      return
+    }
+
+    res.json({ data })
   }
 )
 

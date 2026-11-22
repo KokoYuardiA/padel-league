@@ -292,3 +292,73 @@ export const scheduleRouter = Router()
       res.status(201).json({ data: matches, warning })
     }
   )
+
+  // ── DELETE /api/events/:id/schedule ─────────────────────────
+  // Resets (deletes) the generated schedule for an event so the organizer can
+  // edit settings or regenerate after late registration changes.
+  // Blocked if the event is Completed/Cancelled or if any match has already
+  // been confirmed or has a pending score (protects recorded match results).
+  scheduleRouter.delete(
+    '/:id/schedule',
+    requireAuth,
+    requireGroupRole(ORGANIZER_OR_ADMIN, groupIdFromEventParam('id')),
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      const eventId = req.params.id
+
+      const { data: event, error: eventError } = await supabaseAdmin
+        .from('events')
+        .select('status')
+        .eq('id', eventId)
+        .single()
+
+      if (eventError || !event) {
+        res.status(404).json({ error: 'Event not found' })
+        return
+      }
+
+      if (!EVENT_STATUSES_ELIGIBLE_FOR_GENERATION.includes(event.status)) {
+        res.status(400).json({
+          error: `Cannot reset the schedule while the event is '${event.status}'`,
+          allowed: EVENT_STATUSES_ELIGIBLE_FOR_GENERATION,
+        })
+        return
+      }
+
+      const { data: existingMatches, error: matchesError } = await supabaseAdmin
+        .from('matches')
+        .select('id, status')
+        .eq('event_id', eventId)
+
+      if (matchesError) {
+        res.status(500).json({ error: matchesError.message })
+        return
+      }
+
+      if (!existingMatches || existingMatches.length === 0) {
+        res.status(404).json({ error: 'No schedule exists for this event' })
+        return
+      }
+
+      const scoredMatches = existingMatches.filter(
+        (m) => m.status === 'confirmed' || m.status === 'pending_confirmation'
+      )
+      if (scoredMatches.length > 0) {
+        res.status(409).json({
+          error: `Cannot reset schedule because ${scoredMatches.length} match(es) already have submitted or confirmed scores.`,
+        })
+        return
+      }
+
+      const { error: deleteError } = await supabaseAdmin
+        .from('matches')
+        .delete()
+        .eq('event_id', eventId)
+
+      if (deleteError) {
+        res.status(500).json({ error: deleteError.message })
+        return
+      }
+
+      res.json({ data: [], message: 'Schedule has been reset.' })
+    }
+  )

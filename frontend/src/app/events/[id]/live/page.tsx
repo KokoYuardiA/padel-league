@@ -15,6 +15,7 @@ import {
   Hourglass,
   Settings2,
   ShieldAlert,
+  Trash2,
   Users,
   Wand2,
 } from 'lucide-react'
@@ -56,9 +57,12 @@ interface EventDetail {
   id: string
   group_id: string
   title: string
+  description: string | null
   format: string
   event_date: string
+  start_time: string
   location: string
+  courts_count: number
   status: string
   max_players: number
   registrations: Registration[]
@@ -120,7 +124,21 @@ export default function EventLivePage() {
   const [changingStatus, setChangingStatus] = useState(false)
   const [generatingSchedule, setGeneratingSchedule] = useState(false)
   const [generatingNextRound, setGeneratingNextRound] = useState(false)
+  const [resettingSchedule, setResettingSchedule] = useState(false)
+  const [showResetScheduleConfirm, setShowResetScheduleConfirm] = useState(false)
   const [scheduleWarning, setScheduleWarning] = useState('')
+
+  const [showEditEventModal, setShowEditEventModal] = useState(false)
+  const [editTitle, setEditTitle] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [editFormat, setEditFormat] = useState('Americano')
+  const [editDate, setEditDate] = useState('')
+  const [editStartTime, setEditStartTime] = useState('09:00')
+  const [editLocation, setEditLocation] = useState('')
+  const [editCourtsCount, setEditCourtsCount] = useState(1)
+  const [editMaxPlayers, setEditMaxPlayers] = useState(4)
+  const [savingEvent, setSavingEvent] = useState(false)
+  const [editEventError, setEditEventError] = useState('')
 
   const [showInputModal, setShowInputModal] = useState(false)
   const [scoreModalMode, setScoreModalMode] = useState<'self' | 'override'>('self')
@@ -215,6 +233,11 @@ export default function EventLivePage() {
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'matches', filter: `event_id=eq.${eventId}` },
+        scheduleMatchesRefetch
+      )
+      .on(
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'matches' },
         scheduleMatchesRefetch
       )
       .on(
@@ -402,6 +425,70 @@ export default function EventLivePage() {
     }
   }
 
+  const canResetSchedule =
+    !!event &&
+    ['Open', 'Full', 'In Progress'].includes(event.status) &&
+    matches.length > 0 &&
+    !matches.some((m) => m.status === 'confirmed' || m.status === 'pending_confirmation')
+
+  const handleResetSchedule = async () => {
+    if (!eventId) return
+    setResettingSchedule(true)
+    setActionError('')
+    setScheduleWarning('')
+    try {
+      await apiFetch(`/api/events/${eventId}/schedule`, { method: 'DELETE' })
+      setMatches([])
+      setShowResetScheduleConfirm(false)
+    } catch (err) {
+      setActionError(err instanceof ApiError ? err.message : 'Failed to reset schedule.')
+    } finally {
+      setResettingSchedule(false)
+    }
+  }
+
+  const handleOpenEditEventModal = () => {
+    if (!event) return
+    setEditTitle(event.title)
+    setEditDescription(event.description ?? '')
+    setEditFormat(event.format)
+    setEditDate(event.event_date)
+    setEditStartTime((event.start_time ?? '09:00').slice(0, 5))
+    setEditLocation(event.location)
+    setEditCourtsCount(event.courts_count)
+    setEditMaxPlayers(event.max_players)
+    setEditEventError('')
+    setShowEditEventModal(true)
+  }
+
+  const handleSaveEvent = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!eventId) return
+    setSavingEvent(true)
+    setEditEventError('')
+    try {
+      const { data } = await apiFetch<{ data: EventDetail }>(`/api/events/${eventId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: editTitle,
+          description: editDescription || null,
+          format: editFormat,
+          event_date: editDate,
+          start_time: editStartTime,
+          location: editLocation,
+          courts_count: editCourtsCount,
+          max_players: editMaxPlayers,
+        }),
+      })
+      setEvent((prev) => (prev ? { ...prev, ...data, registrations: prev.registrations } : prev))
+      setShowEditEventModal(false)
+    } catch (err) {
+      setEditEventError(err instanceof ApiError ? err.message : 'Failed to save event changes.')
+    } finally {
+      setSavingEvent(false)
+    }
+  }
+
   const handleConfirmScore = (m: MatchItem) => {
     setSelectedMatch(m)
     setActionError('')
@@ -563,6 +650,15 @@ export default function EventLivePage() {
             Organizer Controls — Current status: <strong className="text-emerald-950 dark:text-white">{event.status}</strong>
           </span>
           <div className="flex flex-wrap items-center gap-2">
+            {!['Completed', 'Cancelled'].includes(event.status) && (
+              <button
+                onClick={handleOpenEditEventModal}
+                className="text-xs font-semibold text-slate-700 dark:text-slate-200 bg-emerald-100/80 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/70 border border-emerald-300/70 dark:border-emerald-700/50 px-3.5 py-1.5 rounded-lg flex items-center gap-1.5"
+              >
+                <Edit3 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                Edit Event
+              </button>
+            )}
             {matches.length === 0 && ['Open', 'Full', 'In Progress'].includes(event.status) && (
               registeredParticipants.length >= 4 ? (
                 <button
@@ -606,6 +702,24 @@ export default function EventLivePage() {
                   )}
                 </div>
               )}
+            {matches.length > 0 && ['Open', 'Full', 'In Progress'].includes(event.status) && (
+              <button
+                onClick={() => {
+                  setActionError('')
+                  setShowResetScheduleConfirm(true)
+                }}
+                disabled={!canResetSchedule || resettingSchedule}
+                title={
+                  canResetSchedule
+                    ? 'Reset and clear the current schedule so you can edit courts/format or regenerate'
+                    : 'Schedule cannot be reset once a match score has been submitted or confirmed'
+                }
+                className="text-xs font-semibold text-rose-600 dark:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3.5 py-1.5 rounded-lg disabled:opacity-40 flex items-center gap-1.5"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Reset Schedule
+              </button>
+            )}
             {EVENT_STATUS_TRANSITIONS[event.status]?.length ? (
               EVENT_STATUS_TRANSITIONS[event.status].map((next) => (
                 <button
@@ -1102,6 +1216,181 @@ export default function EventLivePage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* RESET SCHEDULE CONFIRMATION MODAL */}
+      {showResetScheduleConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-emerald-950 border border-emerald-300/70 dark:border-emerald-700/60 p-6 rounded-3xl max-w-md w-full space-y-6 relative shadow-2xl text-center">
+            <div className="h-12 w-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-500 dark:text-rose-400">
+              <Trash2 className="h-6 w-6" />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold text-emerald-950 dark:text-white">Reset Match Schedule?</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                This will delete all currently generated matches for this event so you can update courts, format, or participants and generate a fresh schedule.
+              </p>
+              {actionError && <p className="text-xs text-rose-500 dark:text-rose-400 mt-2">{actionError}</p>}
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={() => setShowResetScheduleConfirm(false)}
+                disabled={resettingSchedule}
+                className="w-1/2 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/60 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetSchedule}
+                disabled={resettingSchedule}
+                className="w-1/2 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl shadow-lg disabled:opacity-50"
+              >
+                {resettingSchedule ? 'Resetting...' : 'Yes, Reset'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT EVENT MODAL */}
+      {showEditEventModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <form
+            onSubmit={handleSaveEvent}
+            className="bg-white dark:bg-emerald-950 border border-emerald-300/70 dark:border-emerald-700/60 p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-5 relative shadow-2xl my-8"
+          >
+            <h3 className="text-lg font-bold text-emerald-950 dark:text-white">Edit Event Details</h3>
+
+            {editEventError && (
+              <p className="text-xs text-rose-500 dark:text-rose-400">{editEventError}</p>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Event Name</label>
+              <input
+                type="text"
+                required
+                minLength={3}
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Description (optional)</label>
+              <textarea
+                rows={2}
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
+                Match Format {matches.length > 0 && <span className="text-[11px] text-amber-600 dark:text-amber-300 font-normal">(Reset schedule first to change)</span>}
+              </label>
+              <select
+                value={editFormat}
+                onChange={(e) => setEditFormat(e.target.value)}
+                disabled={matches.length > 0}
+                className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400 disabled:opacity-50"
+              >
+                {['Americano', 'Mexicano', 'Fixed Partner', 'Mixed Partner', 'Round Robin'].map((fmt) => (
+                  <option key={fmt} value={fmt}>
+                    {fmt}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Date</label>
+                <input
+                  type="date"
+                  required
+                  value={editDate}
+                  onChange={(e) => setEditDate(e.target.value)}
+                  className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Start Time</label>
+                <input
+                  type="time"
+                  required
+                  value={editStartTime}
+                  onChange={(e) => setEditStartTime(e.target.value)}
+                  className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Courts</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  disabled={matches.length > 0}
+                  value={editCourtsCount}
+                  onChange={(e) => setEditCourtsCount(parseInt(e.target.value) || 1)}
+                  className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-3 py-2.5 text-xs text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400 disabled:opacity-50"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Court Location</label>
+                <input
+                  type="text"
+                  required
+                  minLength={3}
+                  value={editLocation}
+                  onChange={(e) => setEditLocation(e.target.value)}
+                  className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
+                  Max Players (min {Math.max(4, registeredParticipants.length)})
+                </label>
+                <input
+                  type="number"
+                  min={Math.max(4, registeredParticipants.length)}
+                  max={64}
+                  value={editMaxPlayers}
+                  onChange={(e) => setEditMaxPlayers(parseInt(e.target.value) || 4)}
+                  className="w-full bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl px-4 py-2.5 text-sm text-emerald-950 dark:text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowEditEventModal(false)}
+                disabled={savingEvent}
+                className="w-1/2 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-emerald-100/70 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={savingEvent}
+                className="w-1/2 py-2.5 text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-xl shadow-lg disabled:opacity-50"
+              >
+                {savingEvent ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

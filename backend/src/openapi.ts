@@ -1,6 +1,6 @@
 import { extendZodWithOpenApi, OpenAPIRegistry, OpenApiGeneratorV31 } from '@asteasolutions/zod-to-openapi'
 import { z } from 'zod'
-import { CreateEventSchema, UpdateEventStatusSchema } from './routes/events.routes'
+import { CreateEventSchema, UpdateEventSchema, UpdateEventStatusSchema } from './routes/events.routes'
 import { CreateGroupSchema, UpdateGroupSchema, UpdateMemberRoleSchema } from './routes/groups.routes'
 import { SubmitScoreSchema, ConfirmScoreSchema, OverrideScoreSchema } from './routes/matches.routes'
 
@@ -158,6 +158,22 @@ registry.registerPath({
 })
 
 registry.registerPath({
+  method: 'patch',
+  path: '/api/events/{id}',
+  tags: ['Events'],
+  summary: 'Edit event details — Organizer/Group Admin only (format/courts locked while a schedule exists)',
+  security: AUTH,
+  request: { params: idParams('id', 'Event id'), body: { content: { 'application/json': { schema: UpdateEventSchema } } } },
+  responses: {
+    200: ok('Updated event'),
+    400: err('Validation failed, terminal event status, or max_players below current registered count'),
+    403: err('Organizer/Group Admin only'),
+    404: err('Event not found'),
+    409: err('Cannot change format or courts_count while a schedule exists'),
+  },
+})
+
+registry.registerPath({
   method: 'post',
   path: '/api/events/{id}/register',
   tags: ['Events'],
@@ -235,6 +251,22 @@ registry.registerPath({
   security: AUTH,
   request: { params: idParams('id', 'Event id') },
   responses: { 201: ok('Generated next round of matches'), 400: err('Not Mexicano, or a match is still unconfirmed'), 403: err('Organizer/Group Admin only') },
+})
+
+registry.registerPath({
+  method: 'delete',
+  path: '/api/events/{id}/schedule',
+  tags: ['Schedule'],
+  summary: 'Reset (delete) an event\'s generated schedule when no match scores have been submitted or confirmed — Organizer/Group Admin only',
+  security: AUTH,
+  request: { params: idParams('id', 'Event id') },
+  responses: {
+    200: ok('Schedule reset'),
+    400: err('Event status does not allow resetting schedule'),
+    403: err('Organizer/Group Admin only'),
+    404: err('Event or schedule not found'),
+    409: err('One or more matches already have submitted or confirmed scores'),
+  },
 })
 
 // ── Matches ────────────────────────────────────────────────────────────
